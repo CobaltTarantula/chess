@@ -23,3 +23,9 @@
 ## IntelliJ Git Integration
 * he talks about how to use git through the ide of IntelliJ
 * seems similar to how I've used git in VS code
+## Git Tips
+* Review before commit
+* Commit often
+* Beware large binary files
+* Use standard commit msg scheme
+* use .gitignore
