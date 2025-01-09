@@ -5,3 +5,6 @@
 * ```git add FILENAME``` stages file changes
   * ```git add .``` stages all changes
 * ```git commit -m "MESSAGE"``` commits staged changes with a description of changes
+* ```git log``` shows history of commits
+  * each commit has its own unique identifier
+  * when working with commit id often the first few digits of the id is all that is needed to reference it
