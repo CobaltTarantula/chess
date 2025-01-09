@@ -1,2 +1,4 @@
 # My notes
-**Make sure to commit regularly!**
+## Make sure to commit regularly!
+## Basic Git Commands
+* 
