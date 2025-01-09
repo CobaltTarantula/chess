@@ -20,3 +20,6 @@
 ## Renaming, Moving, and Deleting Files
 * when renaming or moving files, instead of using ```mv```, use ```git mv```
 * when deleting files, instead of using ```rm```, use ```git rm```
+## IntelliJ Git Integration
+* he talks about how to use git through the ide of IntelliJ
+* seems similar to how I've used git in VS code
