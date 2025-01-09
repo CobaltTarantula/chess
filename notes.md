@@ -9,7 +9,7 @@
   * ```q``` exits the log
   * each commit has its own unique identifier
   * when working with commit id often the first few digits of the id is all that is needed to reference it
-* ```git checkout .``` go back to previous version
+* ```git checkout .``` go back to previous version, or retrieve previous versions of files from the repository
   * if you use ```IDENTIFIER``` instead of ```.``` then that git commit is the version that will be restored
 ## .gitignore
 * we want core files in the repository AKA **source files**
@@ -17,3 +17,6 @@
 * to avoid having to sift through whether files are source or derived, we use .gitignore
 * whatever we put in .gitignore is ignored when commiting
 * ```!``` makes git __NOT__ ignore whatever follows
+## Renaming, Moving, and Deleting Files
+* when renaming or moving files, instead of using ```mv```, use ```git mv```
+* when deleting files, instead of using ```rm```, use ```git rm```
