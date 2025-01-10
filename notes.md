@@ -37,3 +37,10 @@
 * ```git pull``` brings down all the changes that others have made to the repository
 * ```git push``` sends changes up to repository
 * **merge conflict** when trying to push conflicting code, the code push is prevented until a pull is enacted
+## GitHub Set Up
+* when making a repository gotta determine: name, description, public vs. private
+* **Personal Access Token**: Profile -> Settings -> Developer Settings -> Personal Access Tokens -> Classic
+  * I have it saved in my class folder
+## GitHub Demo
+* if adding files, after adding the files first ```git add``` then ```git push```
+* can decide to ```git commit``` locally first and wait on ```git push```
