@@ -29,3 +29,11 @@
 * Beware large binary files
 * Use standard commit msg scheme
 * use .gitignore
+## GitHub Overview
+* I already have an account: *CobaltTarantula*
+* gives other people access to repositories
+* better backup of the code through remote system
+* run ```git clone URL``` to create a local copy of repository on computer
+* ```git pull``` brings down all the changes that others have made to the repository
+* ```git push``` sends changes up to repository
+* **merge conflict** when trying to push conflicting code, the code push is prevented until a pull is enacted
