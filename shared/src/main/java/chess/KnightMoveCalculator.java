@@ -1,4 +1,11 @@
 package chess;
 
-public class KnightMoveCalculator {
+import java.util.Collection;
+import java.util.List;
+
+public class KnightMoveCalculator implements PieceMovesCalculator {
+    @Override
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        return List.of();
+    }
 }
