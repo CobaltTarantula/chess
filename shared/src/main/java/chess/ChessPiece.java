@@ -62,16 +62,19 @@ public class ChessPiece {
                     moves.addAll(getPathLines(board, myPosition, path[0], path[1]));
                 }
             }
-            case KING -> {
+            case KING, KNIGHT -> {
                 // one of small list of spots
+                int[][] paths = getPaths(pieceType);
+                assert paths != null;
+                for (int[] path : paths) {
+                    ChessMove newMove = getPathSpot(board, myPosition, path[0], path[1]);
+                    if (newMove != null) moves.add(newMove);
+                }
             }
             case PAWN -> {
                 // a bunch of rules
                 // first move
                 // en passante?
-            }
-            case KNIGHT -> {
-                // also one from a small list of spots
             }
         }
         return moves;
