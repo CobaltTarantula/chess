@@ -56,7 +56,10 @@ public class ChessPiece {
         Collection<ChessMove> moves = new ArrayList<>();
         switch(pieceType) {
             case QUEEN, BISHOP, ROOK -> { // linear movements
-                // all linear movements
+                int[][] paths = getPaths(pieceType);
+                for (int[] path : paths){
+                    // to implement
+                }
             }
             case KING -> {
                 // one of small list of spots
@@ -123,6 +126,19 @@ public class ChessPiece {
             }
         }
         return null;
+    }
+
+    private boolean isOccupied (ChessBoard board, ChessPosition nextPos){
+        return board.getPiece(nextPos) != null;
+    }
+
+    private boolean isOutOfBounds(ChessPosition position) {
+        if (position.getRow() <= 0
+                || position.getRow() > 8
+                || position.getColumn() <= 0
+                || position.getColumn() > 8)
+            return true;  // next position is out of bounds
+        else return false;  // next position is within bounds
     }
 
     @Override
