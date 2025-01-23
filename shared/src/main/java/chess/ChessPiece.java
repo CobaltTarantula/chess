@@ -72,9 +72,14 @@ public class ChessPiece {
                 }
             }
             case PAWN -> {
-                // a bunch of rules
-                // first move
-                // en passante?
+                int[][] paths = getPaths(pieceType);
+                assert paths != null;
+                for (int[] path : paths) {
+                    ChessMove newMove;
+                    newMove = getPawnMove(board, myPosition, path[0], path[1]);
+
+                    // more stuff
+                }
             }
         }
         return moves;
@@ -124,9 +129,22 @@ public class ChessPiece {
                 };
             }
             case PAWN -> {
-                return new int[][]{
-                        // To implement
-                };
+                switch (this.getTeamColor()){
+                    case WHITE -> {
+                        return new int [][]{
+                                {1, -1},
+                                {1, 0},
+                                {1, 1},
+                        };
+                    }
+                    case BLACK -> {
+                        return new int [][]{
+                                {-1, -1},
+                                {-1, 0},
+                                {-1, 1},
+                        };
+                    }
+                }
             }
         }
         return null;
@@ -180,6 +198,10 @@ public class ChessPiece {
             else return null;
         }
         else return new ChessMove(myPos, newPos, null);
+    }
+
+    private ChessMove getPawnMove(ChessBoard board, ChessPosition myPos, int vert, int horizon) {
+        //to implement
     }
 
     @Override
