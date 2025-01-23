@@ -55,14 +55,74 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> moves = new ArrayList<>();
         switch(pieceType) {
-            case QUEEN -> pass;
-            case BISHOP -> pass;
-            case KING -> pass;
-            case ROOK -> pass;
-            case PAWN -> pass;
-            case KNIGHT -> pass;
-        };
+            case QUEEN, BISHOP, ROOK -> { // linear movements
+                // all linear movements
+            }
+            case KING -> {
+                // one of small list of spots
+            }
+            case PAWN -> {
+                // a bunch of rules
+                // first move
+                // en passante?
+            }
+            case KNIGHT -> {
+                // also one from a small list of spots
+            }
+        }
         return moves;
+    }
+
+    private int[][] getPaths(PieceType type){
+        switch(type){
+            case KING, QUEEN -> { // any way
+                return new int[][]{
+                        {1, 0},   // Up
+                        {1, 1},   // Up & Right
+                        {0, 1},   // Right
+                        {-1, 1},  // Down & Right
+                        {-1, 0},  // Down
+                        {-1, -1}, // Down & Left
+                        {0, -1},  // Left
+                        {1, -1}   // Up & Left
+                };
+            }
+            case BISHOP -> { // diagonal
+                return new int[][]{
+                        {1, 1},   // Up & Right
+                        {-1, 1},  // Down & Right
+                        {-1, -1}, // Down & Left
+                        {1, -1}   // Up & Left
+                };
+            }
+            case KNIGHT -> { // L
+                return new int[][]{
+                        {1, 2}, // Top right L
+                        {2, 1}, // Upper middle right L
+                        {2, -1}, // Lower middle right L
+                        {1, -2}, // Bottom right L
+                        {-1, -2}, // Bottom left L
+                        {-2, -1}, // Lower middle left L
+                        {-2, 1}, // Upper middle left L
+                        {-1, 2} // Bottom left L
+                };
+            }
+            case ROOK -> {
+                return new int[][]{
+                        {0, 1}, // Up
+                        {1, 0}, // Right
+                        {0, -1}, // Down
+                        {-1, 0} // Left
+
+                };
+            }
+            case PAWN -> {
+                return new int[][]{
+                        // To implement
+                };
+            }
+        }
+        return null;
     }
 
     @Override
