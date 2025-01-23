@@ -90,8 +90,12 @@ public class ChessPiece {
                         if (newMove != null) moves.add(newMove);
                         if (extraMove != null) moves.add(extraMove);
                     }
-
                     // promotions
+                    if (newMove != null){
+                        if (canPromote(newMove, teamColor)) {
+                            moves.addAll(getPawnPromotions(newMove));
+                        } else moves.add(newMove);
+                    }
                 }
             }
         }
@@ -244,6 +248,27 @@ public class ChessPiece {
             }
         }
         return false;
+    }
+
+    private boolean canPromote(ChessMove newMove, ChessGame.TeamColor teamColor) {
+        switch(teamColor){
+            case WHITE -> {
+                if (newMove.getEndPosition().getRow() == 8) return true;
+            }
+            case BLACK -> {
+                if (newMove.getEndPosition().getRow() == 1) return true;
+            }
+        }
+        return false;
+    }
+
+    private Collection<ChessMove> getPawnPromotions(ChessMove newMove) {
+        ArrayList<ChessMove> promotions = new ArrayList<>();
+        promotions.add(new ChessMove(newMove.getStartPosition(), newMove.getEndPosition(), PieceType.QUEEN));
+        promotions.add(new ChessMove(newMove.getStartPosition(), newMove.getEndPosition(), PieceType.ROOK));
+        promotions.add(new ChessMove(newMove.getStartPosition(), newMove.getEndPosition(), PieceType.KNIGHT));
+        promotions.add(new ChessMove(newMove.getStartPosition(), newMove.getEndPosition(), PieceType.BISHOP));
+        return promotions;
     }
 
     @Override
