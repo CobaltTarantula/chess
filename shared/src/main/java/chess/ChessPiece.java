@@ -78,7 +78,20 @@ public class ChessPiece {
                     ChessMove newMove;
                     newMove = getPawnMove(board, myPosition, path[0], path[1]);
 
-                    // more stuff
+                    // first move
+                    if ((path[1] == 0) && isFirstMove(teamColor, myPosition)){
+                        ChessMove extraMove = null;
+                        if (newMove != null){
+                            switch (teamColor){
+                                case WHITE -> extraMove = getPawnMove(board, myPosition, path[0] + 1, path[1]);
+                                case BLACK -> extraMove = getPawnMove(board, myPosition, path[0] - 1, path[1]);
+                            }
+                        }
+                        if (newMove != null) moves.add(newMove);
+                        if (extraMove != null) moves.add(extraMove);
+                    }
+
+                    // promotions
                 }
             }
         }
@@ -219,6 +232,18 @@ public class ChessPiece {
         }
 
         return null;
+    }
+
+    private boolean isFirstMove(ChessGame.TeamColor teamColor, ChessPosition myPos) {
+        switch (teamColor){
+            case WHITE -> {
+                if (myPos.getRow() == 2) return true;
+            }
+            case BLACK -> {
+                if (myPos.getRow() == 7) return true;
+            }
+        }
+        return false;
     }
 
     @Override
