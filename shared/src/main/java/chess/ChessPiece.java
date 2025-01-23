@@ -133,12 +133,11 @@ public class ChessPiece {
     }
 
     private boolean isOutOfBounds(ChessPosition position) {
-        if (position.getRow() <= 0
+        // next position is within bounds
+        return position.getRow() <= 0
                 || position.getRow() > 8
                 || position.getColumn() <= 0
-                || position.getColumn() > 8)
-            return true;  // next position is out of bounds
-        else return false;  // next position is within bounds
+                || position.getColumn() > 8;  // next position is out of bounds
     }
 
     @Override
