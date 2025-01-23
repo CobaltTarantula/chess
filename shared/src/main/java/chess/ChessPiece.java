@@ -57,8 +57,9 @@ public class ChessPiece {
         switch(pieceType) {
             case QUEEN, BISHOP, ROOK -> { // linear movements
                 int[][] paths = getPaths(pieceType);
+                assert paths != null;
                 for (int[] path : paths){
-                    // to implement
+                    moves.addAll(getPathLines(board, myPosition, path[0], path[1]));
                 }
             }
             case KING -> {
