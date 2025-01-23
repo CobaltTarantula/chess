@@ -75,26 +75,38 @@ public class ChessPiece {
                 int[][] paths = getPaths(pieceType);
                 assert paths != null;
                 for (int[] path : paths) {
-                    ChessMove newMove;
-                    newMove = getPawnMove(board, myPosition, path[0], path[1]);
+                    ChessMove singleMove = getPawnMove(board, myPosition, path[0], path[1]);
+                    ChessMove doubleMove = null;
 
-                    // first move
-                    if ((path[1] == 0) && isFirstMove(teamColor, myPosition)){
-                        ChessMove extraMove = null;
-                        if (newMove != null){
-                            switch (teamColor){
-                                case WHITE -> extraMove = getPawnMove(board, myPosition, path[0] + 1, path[1]);
-                                case BLACK -> extraMove = getPawnMove(board, myPosition, path[0] - 1, path[1]);
+                    if (path[1] == 0 && isFirstMove(teamColor, myPosition)) {
+                        switch (teamColor) {
+                            case WHITE -> {
+                                ChessPosition oneStepForward = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
+                                ChessPosition twoStepsForward = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn());
+                                if (board.getPiece(oneStepForward) == null && board.getPiece(twoStepsForward) == null) {
+                                    doubleMove = getPawnMove(board, myPosition, path[0] + 1, path[1]);
+                                }
+                            }
+                            case BLACK -> {
+                                ChessPosition oneStepForward = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
+                                ChessPosition twoStepsForward = new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn());
+
+                                if (board.getPiece(oneStepForward) == null && board.getPiece(twoStepsForward) == null) {
+                                    doubleMove = getPawnMove(board, myPosition, path[0] - 1, path[1]);
+                                }
                             }
                         }
-                        if (newMove != null) moves.add(newMove);
-                        if (extraMove != null) moves.add(extraMove);
                     }
-                    // promotions
-                    if (newMove != null){
-                        if (canPromote(newMove, teamColor)) {
-                            moves.addAll(getPawnPromotions(newMove));
-                        } else moves.add(newMove);
+
+                    if (singleMove != null) {
+                        if (canPromote(singleMove, teamColor)) {
+                            moves.addAll(getPawnPromotions(singleMove)); // Handle promotion
+                        } else {
+                            moves.add(singleMove); // Regular single-square move
+                        }
+                    }
+                    if (doubleMove != null) {
+                        moves.add(doubleMove);
                     }
                 }
             }
