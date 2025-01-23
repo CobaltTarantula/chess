@@ -140,6 +140,26 @@ public class ChessPiece {
                 || position.getColumn() > 8;  // next position is out of bounds
     }
 
+    private Collection<ChessMove> getPathLines(ChessBoard board, ChessPosition myPos, int vert, int horizon) {
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
+
+        for (int i = 1; i < 8; i++) {
+            int newRow = myPos.getRow() + (i * vert);
+            int newCol = myPos.getColumn() + (i * horizon);
+            ChessPosition newPos = new ChessPosition(newRow, newCol);
+
+            if (isOutOfBounds(newPos)) break;
+
+            if (isOccupied(board, newPos)) {
+                if (board.getPiece(newPos).getTeamColor() != this.getTeamColor()){ // opponent's piece
+                    possibleMoves.add(new ChessMove(myPos, newPos, null));
+                }
+                break;
+            } else possibleMoves.add(new ChessMove(myPos, newPos, null));
+        }
+        return possibleMoves;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
