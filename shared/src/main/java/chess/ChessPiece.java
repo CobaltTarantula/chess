@@ -201,7 +201,24 @@ public class ChessPiece {
     }
 
     private ChessMove getPawnMove(ChessBoard board, ChessPosition myPos, int vert, int horizon) {
-        //to implement
+        int nextRow = myPos.getRow() + vert;
+        int nextCol = myPos.getColumn() + horizon;
+        ChessPosition nextPos = new ChessPosition(nextRow, nextCol);
+
+        if (isOutOfBounds(nextPos)) return null;
+        boolean occupied = isOccupied(board, nextPos);
+
+        if (horizon != 0){
+            if (occupied && (board.getPiece(nextPos).getTeamColor() != this.getTeamColor())) {
+                return new ChessMove(myPos, nextPos, null);
+            }
+        }
+
+        else {
+            if (!occupied) return new ChessMove(myPos, nextPos, null);
+        }
+
+        return null;
     }
 
     @Override
