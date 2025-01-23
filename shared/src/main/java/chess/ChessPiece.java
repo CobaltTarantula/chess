@@ -161,6 +161,24 @@ public class ChessPiece {
         return possibleMoves;
     }
 
+    private ChessMove getPathSpot(ChessBoard board, ChessPosition myPos, int vert, int horizon) {
+        int newRow = myPos.getRow() + vert;
+        int newCol = myPos.getColumn() + horizon;
+        ChessPosition newPos = new ChessPosition(newRow, newCol);
+
+        if (isOutOfBounds(newPos)) {
+            return null;
+        }
+
+        if (isOccupied(board, newPos)) {
+            if (board.getPiece(newPos).getTeamColor() != this.getTeamColor()) { // opponent's piece
+                return new ChessMove(myPos, newPos, null);
+            }
+            else return null;
+        }
+        else return new ChessMove(myPos, newPos, null);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
