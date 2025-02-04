@@ -70,6 +70,7 @@ public class ChessGame {
 
     private boolean safeMove(ChessMove move){
         ChessBoard testBoard = new ChessBoard();
+        // set testBoard to be identical to currBoard
         for(int i = 1; i <= 8; i++){
             for(int j = 1; j <= 8; j++){
                 ChessPosition pos = new ChessPosition(i, j);
@@ -79,9 +80,10 @@ public class ChessGame {
                 }
             }
         }
+        // set color
         TeamColor pieceColor = testBoard.getPiece(move.getStartPosition()).getTeamColor();
         // move the piece
-        return isInCheck(pieceColor);
+        return isInCheck(pieceColor); // check if in check
     }
 
     /**
