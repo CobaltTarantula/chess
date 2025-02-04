@@ -103,7 +103,11 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // if (teamColor == currTurn){
+        // if(other team has piece that can capture king){
+        // if(is way to save king){
+        // return true;}}}
+        return false;
     }
 
     /**
@@ -113,7 +117,10 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // if(other team has piece that can capture king){
+        // if(no way to save king){
+        // return true;}}
+        return false;
     }
 
     /**
@@ -124,7 +131,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // if(neither team can make a legal move){
+        // return true;
+        return false;
     }
 
     /**
