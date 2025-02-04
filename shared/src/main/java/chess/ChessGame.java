@@ -53,8 +53,18 @@ public class ChessGame {
         ChessPiece movePiece = currBoard.getPiece(startPosition); // identify piece to move
         if(movePiece == null) return null; // if no piece at position, there are no moves to make from that spot
 
+        // get all possible moves regardless of legality
+        Collection<ChessMove> possMoves = new ArrayList<>(); // gotta retrieve possible moves
+
         Collection<ChessMove> legalMoves = new ArrayList<>(); // initialize collection of legal moves
-        // validate moves dude
+        // parse through possible moves to id legal moves
+        for(ChessMove move : possMoves){
+            // if safe move (doesn't put King in check) then add to legalMoves
+            if(/*safe move*/){
+                legalMoves.add(move);
+            }
+        }
+
         return legalMoves;
     }
 
