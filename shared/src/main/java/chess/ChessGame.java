@@ -54,13 +54,12 @@ public class ChessGame {
         if(movePiece == null) return null; // if no piece at position, there are no moves to make from that spot
 
         // get all possible moves regardless of legality
-        Collection<ChessMove> possMoves = new ArrayList<>(); // gotta retrieve possible moves
+        Collection<ChessMove> possMoves = movePiece.pieceMoves(currBoard, startPosition); // gotta retrieve possible moves
 
         Collection<ChessMove> legalMoves = new ArrayList<>(); // initialize collection of legal moves
-        // parse through possible moves to id legal moves
-        for(ChessMove move : possMoves){
-            // if safe move (doesn't put King in check) then add to legalMoves
-            if(safeMove(move)){
+
+        for(ChessMove move : possMoves){ // parse through possible moves to id legal moves
+            if(safeMove(move)){ // if safe move (doesn't put King in check) then add to legalMoves
                 legalMoves.add(move);
             }
         }
@@ -70,8 +69,7 @@ public class ChessGame {
 
     private boolean safeMove(ChessMove move){
         ChessBoard testBoard = new ChessBoard();
-        // set testBoard to be identical to currBoard
-        for(int i = 1; i <= 8; i++){
+        for(int i = 1; i <= 8; i++){ // set testBoard to be identical to currBoard
             for(int j = 1; j <= 8; j++){
                 ChessPosition pos = new ChessPosition(i, j);
                 ChessPiece piece = currBoard.getPiece(pos);
@@ -80,10 +78,9 @@ public class ChessGame {
                 }
             }
         }
-        // set color
-        TeamColor pieceColor = testBoard.getPiece(move.getStartPosition()).getTeamColor();
-        // move the piece
-        return isInCheck(pieceColor); // check if in check
+        TeamColor pieceColor = testBoard.getPiece(move.getStartPosition()).getTeamColor(); // set color
+        makeMove(move); // move the piece
+        return (!isInCheck(pieceColor)); // check if in check
     }
 
     /**
@@ -117,7 +114,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        // if(other team has piece that can capture king){
+        // if(isInCheck){
         // if(no way to save king){
         // return true;}}
         return false;
