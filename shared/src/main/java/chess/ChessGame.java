@@ -50,11 +50,10 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessPiece movePiece = currBoard.getPiece(startPosition); // identify piece to move
+        ChessPiece movePiece = getBoard().getPiece(startPosition); // identify piece to move
         if(movePiece == null) return null; // if no piece at position, there are no moves to make from that spot
 
-        // get all possible moves regardless of legality
-        Collection<ChessMove> possMoves = movePiece.pieceMoves(currBoard, startPosition); // gotta retrieve possible moves
+        Collection<ChessMove> possMoves = movePiece.pieceMoves(getBoard(), startPosition); // retrieve valid/possible moves
 
         Collection<ChessMove> legalMoves = new ArrayList<>(); // initialize collection of legal moves
 
@@ -72,7 +71,7 @@ public class ChessGame {
         for(int i = 1; i <= 8; i++){ // set testBoard to be identical to currBoard
             for(int j = 1; j <= 8; j++){
                 ChessPosition pos = new ChessPosition(i, j);
-                ChessPiece piece = currBoard.getPiece(pos);
+                ChessPiece piece = getBoard().getPiece(pos);
                 if(piece!=null){
                     testBoard.addPiece(pos, new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
                 }
@@ -90,6 +89,23 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        ChessPiece piece = getBoard().getPiece(move.getStartPosition());
+        if(piece == null){ // if no piece then throw exception
+            throw new InvalidMoveException("No piece to move.");
+        }
+
+        if(piece.getTeamColor()!=getTeamTurn()){ // if not color turn then throw exception
+            throw new InvalidMoveException("Not " + piece.getTeamColor() + "'s turn");
+        }
+
+        // validate move legality
+
+        // check for check
+
+        // check for checkmate
+
+        // check for stalemate
+
         throw new RuntimeException("Not implemented");
     }
 
