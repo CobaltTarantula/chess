@@ -98,7 +98,10 @@ public class ChessGame {
             throw new InvalidMoveException("Not " + piece.getTeamColor() + "'s turn");
         }
 
-        // validate move legality
+        Collection<ChessMove> legalMoves = validMoves(move.getStartPosition()); // validate move legality
+        if(legalMoves == null || !legalMoves.contains(move)){
+            throw new InvalidMoveException("Invalid move.");
+        }
 
         // check for check
 
@@ -116,10 +119,21 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        // if (teamColor == currTurn){
-        // if(other team has piece that can capture king){
-        // if(is way to save king){
-        // return true;}}}
+        Collection<ChessMove> allMoves = new ArrayList<>();
+        for (int row = 1; row <= 8; row++) { // iterate over whole board
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = getBoard().getPiece(position);
+
+                // if piece's color matches teamColor, add move to list
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> moves = piece.pieceMoves(getBoard(), position);
+                    allMoves.addAll(moves);
+                }
+            }
+        }
+        // iterate over moves to see if any of opponents moves lands them on king
+        // if so, return true
         return false;
     }
 
@@ -134,6 +148,10 @@ public class ChessGame {
         // if(no way to save king){
         // return true;}}
         return false;
+    }
+
+    private ChessPosition kingPosition(){
+        return null;
     }
 
     /**
