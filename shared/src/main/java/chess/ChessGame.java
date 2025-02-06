@@ -151,6 +151,15 @@ public class ChessGame {
     }
 
     private ChessPosition kingPosition(){
+        for (int row = 1; row <= 8; row++) { // iterate over whole board
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece piece = getBoard().getPiece(pos);
+                if (piece != null && piece.getTeamColor() == getTeamTurn() && piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    return pos; // as long as there is a piece at the position, and the color and type match desired
+                }
+            }
+        }
         return null;
     }
 
