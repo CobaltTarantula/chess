@@ -67,17 +67,8 @@ public class ChessGame {
     }
 
     private boolean safeMove(ChessMove move){
-        ChessBoard testBoard = new ChessBoard();
-        for(int i = 1; i <= 8; i++){ // set testBoard to be identical to currBoard
-            for(int j = 1; j <= 8; j++){
-                ChessPosition pos = new ChessPosition(i, j);
-                ChessPiece piece = getBoard().getPiece(pos);
-                if(piece!=null){
-                    testBoard.addPiece(pos, new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
-                }
-            }
-        }
-        TeamColor pieceColor = testBoard.getPiece(move.getStartPosition()).getTeamColor(); // set color
+        ChessBoard test = testBoard(getBoard());
+        TeamColor pieceColor = test.getPiece(move.getStartPosition()).getTeamColor(); // set color
         makeMove(move); // move the piece
         return (!isInCheck(pieceColor)); // check if in check
     }
@@ -104,12 +95,28 @@ public class ChessGame {
         }
 
         // check for check
+        if(!safeMove(move)) throw new InvalidMoveException("Unsafe move leaves your king in check.");
 
         // check for checkmate
+        if(isInCheckmate(getTeamTurn())) throw new InvalidMoveException("CHECKMATE.");
 
         // check for stalemate
+        if(isInStalemate(getTeamTurn())) throw new InvalidMoveException("STALEMATE.");
 
-        throw new RuntimeException("Not implemented");
+        // actually move the pieces (copy piece to new spot, set old spot to null)
+        if (move.getPromotionPiece() != null) { // promotion needed?
+            TeamColor pawnColor = getBoard().getPiece(move.getStartPosition()).getTeamColor();
+            ChessPiece promotedPawn = new ChessPiece(pawnColor, move.getPromotionPiece());
+            getBoard().addPiece(move.getEndPosition(), promotedPawn);
+            getBoard().removePiece(move.getStartPosition());
+        } else {
+            getBoard().addPiece(move.getEndPosition(), getBoard().getPiece(move.getStartPosition()));
+            getBoard().removePiece(move.getStartPosition());
+        }
+
+        // pass turn after making a move
+        if(getTeamTurn() == TeamColor.BLACK) setTeamTurn(TeamColor.WHITE);
+        else if(getTeamTurn() == TeamColor.WHITE) setTeamTurn(TeamColor.BLACK);
     }
 
     /**
@@ -180,9 +187,19 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        if(isInCheck(teamColor)) return false; // not in stalemate if in Check
+        Collection<ChessMove> allMoves = getAllMoves(teamColor);
+        ChessBoard test = testBoard(getBoard());
+
+        for(ChessMove move:allMoves){
+            makeMove(move);
+            setBoard(test);
+            if(isInCheck(teamColor)) return false;
+            test = testBoard(getBoard());
+        }
         // if(neither team can make a legal move){
         // return true;
-        return false;
+        return true;
     }
 
     /**
@@ -201,5 +218,19 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return currBoard;
+    }
+
+    private ChessBoard testBoard(ChessBoard board){
+        ChessBoard test = new ChessBoard();
+        for(int i = 1; i <= 8; i++){ // set testBoard to be identical to currBoard
+            for(int j = 1; j <= 8; j++){
+                ChessPosition pos = new ChessPosition(i, j);
+                ChessPiece piece = board.getPiece(pos);
+                if(piece!=null){
+                    test.addPiece(pos, new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
+                }
+            }
+        }
+        return test;
     }
 }
