@@ -13,6 +13,12 @@ public class ChessGame {
     private TeamColor currTurn;
     private ChessBoard currBoard;
     private ChessMove lastMove;
+    private boolean whiteKingMoved = false;
+    private boolean blackKingMoved = false;
+    private boolean whiteRookLeftMoved = false;
+    private boolean whiteRookRightMoved = false;
+    private boolean blackRookLeftMoved = false;
+    private boolean blackRookRightMoved = false;
     public ChessGame() {
         currBoard = new ChessBoard(); // creates the chessboard
         currBoard.resetBoard(); // sets all the pieces
@@ -69,6 +75,37 @@ public class ChessGame {
         }
 
         return legalMoves;
+    }
+
+    private Collection<ChessMove> castle(ChessPosition kingPos){
+        Collection<ChessMove> moves = new ArrayList<>();
+        TeamColor color = getBoard().getPiece(kingPos).getTeamColor();
+
+        // check king and rook movement
+        if ((color == TeamColor.WHITE && whiteKingMoved) || (color == TeamColor.BLACK && blackKingMoved)) {
+            return moves; // King has already moved, no castling allowed
+        }
+
+        int row = (color == TeamColor.WHITE) ? 1 : 8;
+        ChessPosition kingStart = new ChessPosition(row, 5); // Default starting position of the king
+
+        if (!kingPos.equals(kingStart)) return moves; // King not in its initial position
+
+        // Castling to the right (Kingside)
+        if (canCastle(kingStart, new ChessPosition(row, 8), color)) {
+            moves.add(new ChessMove(kingPos, new ChessPosition(row, 7), null)); // Move king two spaces right
+        }
+
+        // Castling to the left (Queenside)
+        if (canCastle(kingStart, new ChessPosition(row, 1), color)) {
+            moves.add(new ChessMove(kingPos, new ChessPosition(row, 3), null)); // Move king two spaces left
+        }
+
+        return moves;
+    }
+
+    private boolean canCastle(ChessPosition startPosition, ChessPosition endPosition, TeamColor color){
+        return false;
     }
 
     private Collection<ChessMove> enPassant(ChessPosition pos){
