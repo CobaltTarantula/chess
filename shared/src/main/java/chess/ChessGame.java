@@ -68,14 +68,15 @@ public class ChessGame {
 
     private boolean safeMove(ChessMove move){
         ChessBoard test = testBoard(getBoard());
-        TeamColor pieceColor = test.getPiece(move.getStartPosition()).getTeamColor(); // set color
-        try {
-            ChessGame testGame = new ChessGame();
-            testGame.makeMove(move); // move the piece
-            return (!testGame.isInCheck(pieceColor)); // check if in check
-        } catch (InvalidMoveException e) {
-            return false;
-        }
+        ChessPiece movingPiece = test.getPiece(move.getStartPosition());
+        if(movingPiece == null) return false; // no piece to move
+
+        // Apply the move on the test board
+        test.removePiece(move.getEndPosition()); // Remove any captured piece
+        test.addPiece(move.getEndPosition(), test.getPiece(move.getStartPosition()));
+        test.removePiece(move.getStartPosition());
+
+        return !isInCheck(movingPiece.getTeamColor(), test); // Pass the test board to check if king is in check
     }
 
     /**
@@ -102,12 +103,6 @@ public class ChessGame {
         // check for check
         if(!safeMove(move)) throw new InvalidMoveException("Unsafe move leaves your king in check.");
 
-        // check for checkmate
-        if(isInCheckmate(getTeamTurn())) throw new InvalidMoveException("CHECKMATE.");
-
-        // check for stalemate
-        if(isInStalemate(getTeamTurn())) throw new InvalidMoveException("STALEMATE.");
-
         // actually move the pieces (copy piece to new spot, set old spot to null)
         if (move.getPromotionPiece() != null) { // promotion needed?
             TeamColor pawnColor = getBoard().getPiece(move.getStartPosition()).getTeamColor();
@@ -122,6 +117,12 @@ public class ChessGame {
         // pass turn after making a move
         if(getTeamTurn() == TeamColor.BLACK) setTeamTurn(TeamColor.WHITE);
         else if(getTeamTurn() == TeamColor.WHITE) setTeamTurn(TeamColor.BLACK);
+
+        // check for checkmate
+        if(isInCheckmate(getTeamTurn())) throw new InvalidMoveException("CHECKMATE.");
+
+        // check for stalemate
+        if(isInStalemate(getTeamTurn())) throw new InvalidMoveException("STALEMATE.");
     }
 
     /**
@@ -131,11 +132,16 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        Collection<ChessMove> allMoves = getAllMoves(teamColor);
+        return isInCheck(teamColor, getBoard());
+    }
+
+    private boolean isInCheck(TeamColor teamColor, ChessBoard board){
+        Collection<ChessMove> allMoves = getAllMoves((teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE
+        );
         // iterate over moves to see if any of opponents moves lands them on king
         for(ChessMove move: allMoves){
             // if so, return true
-            if (move.getEndPosition().equals(kingPosition(teamColor, getBoard()))) return true;
+            if (move.getEndPosition().equals(kingPosition(teamColor, board))) return true;
         }
         return false;
     }
@@ -149,10 +155,7 @@ public class ChessGame {
     public boolean isInCheckmate(TeamColor teamColor) {
         if(!isInCheck(teamColor)) return false; // Must be in check first
         Collection<ChessMove> moves = getAllMoves(teamColor); // if in check, then make sure there are no safe moves
-        for(ChessMove move : moves){
-            if(safeMove(move)) return false;
-        }
-        return true;
+        return moves.isEmpty(); // if no legal moves then in checkmate
     }
 
     private ChessPosition kingPosition(TeamColor teamColor, ChessBoard board){
@@ -178,7 +181,12 @@ public class ChessGame {
                 // if piece's color matches teamColor, add move to list
                 if (piece != null && piece.getTeamColor() == teamColor) {
                     Collection<ChessMove> moves = piece.pieceMoves(getBoard(), position);
-                    allMoves.addAll(moves);
+                    // Only add moves that are safe
+                    for (ChessMove move : moves) {
+                        if (safeMove(move)) { // Ensure the move doesn't leave the king in check
+                            allMoves.add(move);
+                        }
+                    }
                 }
             }
         }
