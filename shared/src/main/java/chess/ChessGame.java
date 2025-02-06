@@ -104,8 +104,72 @@ public class ChessGame {
         return moves;
     }
 
-    private boolean canCastle(ChessPosition startPosition, ChessPosition endPosition, TeamColor color){
+    private boolean canCastle(ChessPosition start, ChessPosition end, TeamColor color){
+        ChessPiece piece = getBoard().getPiece(start);
+
+        if(piece == null || piece.getPieceType() != ChessPiece.PieceType.KING) return false;
+
+        // Check if the king has already moved
+        if(piece.getTeamColor() == TeamColor.WHITE && whiteKingMoved) return false;
+        if(piece.getTeamColor() == TeamColor.BLACK && blackKingMoved) return false;
+
+        // Check if the rook involved has already moved
+        if(piece.getTeamColor() == TeamColor.WHITE) {
+            if(end.getColumn() == 3 && !whiteRookLeftMoved) {
+                // Check if the path between the king and rook is clear
+                if(isPathClear(start, end)) {
+                    ChessMove move = new ChessMove(start, end, null);
+                    return safeMove(move);  // Use safeMove to check if the move puts the king in check
+                }
+            } else if(end.getColumn() == 6 && !whiteRookRightMoved) {
+                // Check if the path between the king and rook is clear
+                if(isPathClear(start, end)) {
+                    ChessMove move = new ChessMove(start, end, null);
+                    return safeMove(move);  // Use safeMove to check if the move puts the king in check
+                }
+            }
+        } else {
+            if(end.getColumn() == 3 && !blackRookLeftMoved) {
+                // Check if the path between the king and rook is clear
+                if(isPathClear(start, end)) {
+                    ChessMove move = new ChessMove(start, end, null);
+                    return safeMove(move);  // Use safeMove to check if the move puts the king in check
+                }
+            } else if(end.getColumn() == 6 && !blackRookRightMoved) {
+                // Check if the path between the king and rook is clear
+                if(isPathClear(start, end)) {
+                    ChessMove move = new ChessMove(start, end, null);
+                    return safeMove(move);  // Use safeMove to check if the move puts the king in check
+                }
+            }
+        }
+
         return false;
+    }
+
+    // Helper method to check if the path between the king and the rook is clear
+    private boolean isPathClear(ChessPosition kingStart, ChessPosition kingEnd) {
+        int startColumn = kingStart.getColumn();
+        int endColumn = kingEnd.getColumn();
+        int row = kingStart.getRow();
+
+        // Check for squares between the king and rook
+        if (startColumn < endColumn) {
+            // Check for kingside castling
+            for (int col = startColumn + 1; col < endColumn; col++) {
+                if (getBoard().getPiece(new ChessPosition(row, col)) != null) {
+                    return false;  // Path is blocked
+                }
+            }
+        } else {
+            // Check for queenside castling
+            for (int col = startColumn - 1; col > endColumn; col--) {
+                if (getBoard().getPiece(new ChessPosition(row, col)) != null) {
+                    return false;  // Path is blocked
+                }
+            }
+        }
+        return true;
     }
 
     private Collection<ChessMove> enPassant(ChessPosition pos){
