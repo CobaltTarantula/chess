@@ -12,6 +12,7 @@ import java.util.Collection;
 public class ChessGame {
     private TeamColor currTurn;
     private ChessBoard currBoard;
+    private ChessMove lastMove;
     public ChessGame() {
         currBoard = new ChessBoard(); // creates the chessboard
         currBoard.resetBoard(); // sets all the pieces
@@ -58,14 +59,37 @@ public class ChessGame {
         Collection<ChessMove> legalMoves = new ArrayList<>(); // initialize collection of legal moves
 
         for(ChessMove move : possMoves){ // parse through possible moves to id legal moves
-            if(/*!*/safeMove(move)){ // if safe move (doesn't put King in check) then add to legalMoves
+            if(safeMove(move)){ // if safe move (doesn't put King in check) then add to legalMoves
                 legalMoves.add(move);
             }
         }
 
         return legalMoves;
     }
-    // review this later
+
+    private Collection<ChessMove> enPassant(ChessPosition pos){
+        Collection<ChessMove> moves = new ArrayList<>();
+        ChessPiece piece = getBoard().getPiece(pos);
+        if(piece == null || piece.getPieceType() != ChessPiece.PieceType.PAWN) return moves;
+
+        if(lastMove == null) return moves;
+
+        ChessPosition lastStart = lastMove.getStartPosition();
+        ChessPosition lastEnd = lastMove.getEndPosition();
+        ChessPiece lastPiece = getBoard().getPiece(lastEnd);
+
+        if(lastPiece == null || lastPiece.getPieceType()!= ChessPiece.PieceType.PAWN) return moves;
+
+        if(Math.abs(lastStart.getRow() - lastEnd.getRow()) == 2){
+            if(Math.abs(lastEnd.getColumn() - pos.getColumn()) == 1){
+                int dir = (piece.getTeamColor() == TeamColor.WHITE) ? 1 : -1;
+                ChessPosition target = new ChessPosition(lastEnd.getRow()+dir, lastEnd.getColumn());
+                moves.add(new ChessMove(pos, target, null));
+            }
+        }
+        return moves;
+    }
+
     private boolean safeMove(ChessMove move){
         ChessBoard test = testBoard(getBoard());
         ChessPiece movingPiece = test.getPiece(move.getStartPosition());
@@ -176,23 +200,6 @@ public class ChessGame {
         return null;
     }
 
-    private Collection<ChessMove> getAllMoves(TeamColor teamColor, ChessBoard board){
-        Collection<ChessMove> allMoves = new ArrayList<>();
-        for (int row = 1; row <= 8; row++) { // iterate over whole board
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition position = new ChessPosition(row, col);
-                ChessPiece piece = board.getPiece(position);
-
-                // if piece's color matches teamColor, add move to list
-                if (piece != null && piece.getTeamColor() == teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
-                    allMoves.addAll(moves);
-                }
-            }
-        }
-        return allMoves;
-    }
-
     /**
      * Determines if the given team is in stalemate, which here is defined as having
      * no valid moves
@@ -208,6 +215,23 @@ public class ChessGame {
             if(safeMove(move)) return false;
         }
         return true;
+    }
+
+    private Collection<ChessMove> getAllMoves(TeamColor teamColor, ChessBoard board){
+        Collection<ChessMove> allMoves = new ArrayList<>();
+        for (int row = 1; row <= 8; row++) { // iterate over whole board
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                // if piece's color matches teamColor, add move to list
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
+                    allMoves.addAll(moves);
+                }
+            }
+        }
+        return allMoves;
     }
 
     /**
