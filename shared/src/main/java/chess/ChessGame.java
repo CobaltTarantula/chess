@@ -119,19 +119,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        Collection<ChessMove> allMoves = new ArrayList<>();
-        for (int row = 1; row <= 8; row++) { // iterate over whole board
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition position = new ChessPosition(row, col);
-                ChessPiece piece = getBoard().getPiece(position);
-
-                // if piece's color matches teamColor, add move to list
-                if (piece != null && piece.getTeamColor() == teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(getBoard(), position);
-                    allMoves.addAll(moves);
-                }
-            }
-        }
+        Collection<ChessMove> allMoves = getAllMoves(teamColor);
         // iterate over moves to see if any of opponents moves lands them on king
         for(ChessMove move: allMoves){
             // if so, return true
@@ -147,7 +135,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        Collection<ChessMove> moves = new ArrayList<>(); // rework
+        Collection<ChessMove> moves = getAllMoves(teamColor); // rework
         for(ChessMove move : moves){
             if(safeMove(move)) return false;
         }
@@ -165,6 +153,23 @@ public class ChessGame {
             }
         }
         return null;
+    }
+
+    private Collection<ChessMove> getAllMoves(TeamColor teamColor){
+        Collection<ChessMove> allMoves = new ArrayList<>();
+        for (int row = 1; row <= 8; row++) { // iterate over whole board
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = getBoard().getPiece(position);
+
+                // if piece's color matches teamColor, add move to list
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> moves = piece.pieceMoves(getBoard(), position);
+                    allMoves.addAll(moves);
+                }
+            }
+        }
+        return allMoves;
     }
 
     /**
