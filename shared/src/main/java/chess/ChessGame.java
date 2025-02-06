@@ -137,6 +137,7 @@ public class ChessGame {
         // check for stalemate
         if(isInStalemate(getTeamTurn())) throw new InvalidMoveException("STALEMATE.");
 
+        // handle enPassant
         if(piece.getPieceType() == ChessPiece.PieceType.PAWN && lastMove != null &&  Math.abs(move.getStartPosition().getColumn() - lastMove.getEndPosition().getColumn()) == 1 && move.getEndPosition().equals(new ChessPosition(lastMove.getEndPosition().getRow() + (piece.getTeamColor() == TeamColor.WHITE ? 1 : -1), lastMove.getEndPosition().getColumn()))){
             getBoard().removePiece(lastMove.getEndPosition());
         }
