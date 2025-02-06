@@ -64,6 +64,10 @@ public class ChessGame {
             }
         }
 
+        if(movePiece.getPieceType() == ChessPiece.PieceType.PAWN){
+            legalMoves.addAll(enPassant(startPosition));
+        }
+
         return legalMoves;
     }
 
@@ -133,6 +137,10 @@ public class ChessGame {
         // check for stalemate
         if(isInStalemate(getTeamTurn())) throw new InvalidMoveException("STALEMATE.");
 
+        if(piece.getPieceType() == ChessPiece.PieceType.PAWN && lastMove != null &&  Math.abs(move.getStartPosition().getColumn() - lastMove.getEndPosition().getColumn()) == 1 && move.getEndPosition().equals(new ChessPosition(lastMove.getEndPosition().getRow() + (piece.getTeamColor() == TeamColor.WHITE ? 1 : -1), lastMove.getEndPosition().getColumn()))){
+            getBoard().removePiece(lastMove.getEndPosition());
+        }
+
         // actually move the pieces (copy piece to new spot, set old spot to null)
         if (move.getPromotionPiece() != null) { // promotion needed?
             TeamColor pawnColor = getBoard().getPiece(move.getStartPosition()).getTeamColor();
@@ -143,6 +151,8 @@ public class ChessGame {
             getBoard().addPiece(move.getEndPosition(), getBoard().getPiece(move.getStartPosition()));
             getBoard().removePiece(move.getStartPosition());
         }
+
+        lastMove = move;
 
         // pass turn after making a move
         if(getTeamTurn() == TeamColor.BLACK) setTeamTurn(TeamColor.WHITE);
