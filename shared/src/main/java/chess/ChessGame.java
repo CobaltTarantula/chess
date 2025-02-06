@@ -69,8 +69,13 @@ public class ChessGame {
     private boolean safeMove(ChessMove move){
         ChessBoard test = testBoard(getBoard());
         TeamColor pieceColor = test.getPiece(move.getStartPosition()).getTeamColor(); // set color
-        makeMove(move); // move the piece
-        return (!isInCheck(pieceColor)); // check if in check
+        try {
+            ChessGame testGame = new ChessGame();
+            testGame.makeMove(move); // move the piece
+            return (!testGame.isInCheck(pieceColor)); // check if in check
+        } catch (InvalidMoveException e) {
+            return false;
+        }
     }
 
     /**
@@ -142,7 +147,8 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        Collection<ChessMove> moves = getAllMoves(teamColor); // rework
+        if(!isInCheck(teamColor)) return false; // Must be in check first
+        Collection<ChessMove> moves = getAllMoves(teamColor); // if in check, then make sure there are no safe moves
         for(ChessMove move : moves){
             if(safeMove(move)) return false;
         }
@@ -154,7 +160,7 @@ public class ChessGame {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(pos);
-                if (piece != null && teamColor == getTeamTurn() && piece.getPieceType() == ChessPiece.PieceType.KING) {
+                if (piece != null && piece.getTeamColor() == teamColor && piece.getPieceType() == ChessPiece.PieceType.KING) {
                     return pos; // as long as there is a piece at the position, and the color and type match desired
                 }
             }
@@ -189,16 +195,10 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         if(isInCheck(teamColor)) return false; // not in stalemate if in Check
         Collection<ChessMove> allMoves = getAllMoves(teamColor);
-        ChessBoard test = testBoard(getBoard());
 
-        for(ChessMove move:allMoves){
-            makeMove(move);
-            setBoard(test);
-            if(isInCheck(teamColor)) return false;
-            test = testBoard(getBoard());
+        for(ChessMove move:allMoves){ // if any safe move then not in stalemate
+            if(safeMove(move)) return false;
         }
-        // if(neither team can make a legal move){
-        // return true;
         return true;
     }
 
