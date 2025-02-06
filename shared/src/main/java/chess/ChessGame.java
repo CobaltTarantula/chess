@@ -133,7 +133,10 @@ public class ChessGame {
             }
         }
         // iterate over moves to see if any of opponents moves lands them on king
-        // if so, return true
+        for(ChessMove move: allMoves){
+            // if so, return true
+            if (move.getEndPosition().equals(kingPosition(teamColor, getBoard()))) return true;
+        }
         return false;
     }
 
@@ -144,18 +147,19 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        // if(isInCheck){
-        // if(no way to save king){
-        // return true;}}
-        return false;
+        Collection<ChessMove> moves = new ArrayList<>(); // rework
+        for(ChessMove move : moves){
+            if(safeMove(move)) return false;
+        }
+        return true;
     }
 
-    private ChessPosition kingPosition(){
+    private ChessPosition kingPosition(TeamColor teamColor, ChessBoard board){
         for (int row = 1; row <= 8; row++) { // iterate over whole board
             for (int col = 1; col <= 8; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
-                ChessPiece piece = getBoard().getPiece(pos);
-                if (piece != null && piece.getTeamColor() == getTeamTurn() && piece.getPieceType() == ChessPiece.PieceType.KING) {
+                ChessPiece piece = board.getPiece(pos);
+                if (piece != null && teamColor == getTeamTurn() && piece.getPieceType() == ChessPiece.PieceType.KING) {
                     return pos; // as long as there is a piece at the position, and the color and type match desired
                 }
             }
