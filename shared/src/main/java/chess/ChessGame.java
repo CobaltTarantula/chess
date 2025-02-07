@@ -83,74 +83,57 @@ public class ChessGame {
         return legalMoves;
     }
 
-    private Collection<ChessMove> castle(ChessPosition kingPos){
+    private Collection<ChessMove> castle(ChessPosition kingPos) {
         Collection<ChessMove> moves = new ArrayList<>();
         TeamColor color = getBoard().getPiece(kingPos).getTeamColor();
 
-        // check king and rook movement
-        if ((color == TeamColor.WHITE && whiteKingMoved) || (color == TeamColor.BLACK && blackKingMoved)) {
-            return moves; // King has already moved, no castling allowed
-        }
-
+        // Ensure king is in its starting position
         int row = (color == TeamColor.WHITE) ? 1 : 8;
-        ChessPosition kingStart = new ChessPosition(row, 5); // Default starting position of the king
+        ChessPosition kingStart = new ChessPosition(row, 5);
 
-        if (!kingPos.equals(kingStart)) return moves; // King not in its initial position
+        if (!kingPos.equals(kingStart) || isInCheck(color)) return moves; // King must be in initial position & not in check
 
-        // Castling to the right (Kingside)
-        if (canCastle(kingStart, new ChessPosition(row, 8), color)) {
-            moves.add(new ChessMove(kingPos, new ChessPosition(row, 7), null)); // Move king two spaces right
+        // Kingside castling
+        if (canCastle(kingStart, new ChessPosition(row, 7), new ChessPosition(row, 8), color, true)) {
+            moves.add(new ChessMove(kingPos, new ChessPosition(row, 7), null));
         }
 
-        // Castling to the left (Queenside)
-        if (canCastle(kingStart, new ChessPosition(row, 1), color)) {
-            moves.add(new ChessMove(kingPos, new ChessPosition(row, 3), null)); // Move king two spaces left
+        // Queenside castling
+        if (canCastle(kingStart, new ChessPosition(row, 3), new ChessPosition(row, 1), color, false)) {
+            moves.add(new ChessMove(kingPos, new ChessPosition(row, 3), null));
         }
 
         return moves;
     }
 
-    private boolean canCastle(ChessPosition start, ChessPosition end, TeamColor color){
-        ChessPiece piece = getBoard().getPiece(start);
-
-        if(piece == null || piece.getPieceType() != ChessPiece.PieceType.KING) return false;
-
-        // Check if the king has already moved
-        if(piece.getTeamColor() == TeamColor.WHITE && whiteKingMoved) return false;
-        if(piece.getTeamColor() == TeamColor.BLACK && blackKingMoved) return false;
-
-        // Check if the rook involved has already moved
-        if(piece.getTeamColor() == TeamColor.WHITE) {
-            if(end.getColumn() == 3 && !whiteRookLeftMoved) {
-                // Check if the path between the king and rook is clear
-                if(isPathClear(start, end)) {
-                    ChessMove move = new ChessMove(start, end, null);
-                    return safeMove(move);  // Use safeMove to check if the move puts the king in check
-                }
-            } else if(end.getColumn() == 6 && !whiteRookRightMoved) {
-                // Check if the path between the king and rook is clear
-                if(isPathClear(start, end)) {
-                    ChessMove move = new ChessMove(start, end, null);
-                    return safeMove(move);  // Use safeMove to check if the move puts the king in check
-                }
-            }
-        } else {
-            if(end.getColumn() == 3 && !blackRookLeftMoved) {
-                // Check if the path between the king and rook is clear
-                if(isPathClear(start, end)) {
-                    ChessMove move = new ChessMove(start, end, null);
-                    return safeMove(move);  // Use safeMove to check if the move puts the king in check
-                }
-            } else if(end.getColumn() == 6 && !blackRookRightMoved) {
-                // Check if the path between the king and rook is clear
-                if(isPathClear(start, end)) {
-                    ChessMove move = new ChessMove(start, end, null);
-                    return safeMove(move);  // Use safeMove to check if the move puts the king in check
-                }
-            }
+    private boolean canCastle(ChessPosition kingStart, ChessPosition kingEnd, ChessPosition rookPos, TeamColor color, boolean kingside) {
+        // Ensure king and rook have not moved
+        if (color == TeamColor.WHITE && (whiteKingMoved ||
+                (kingside ? whiteRookRightMoved : whiteRookLeftMoved))) {
+            return false;
+        }
+        if (color == TeamColor.BLACK && (blackKingMoved ||
+                (kingside ? blackRookRightMoved : blackRookLeftMoved))) {
+            return false;
         }
 
-        return false;
+        // Ensure rook exists and is in the right position
+        ChessPiece rook = getBoard().getPiece(rookPos);
+        if (rook == null || rook.getPieceType() != ChessPiece.PieceType.ROOK || rook.getTeamColor() != color) {
+            return false;
+        }
+
+        // Ensure path is clear
+        if (!isPathClear(kingStart, rookPos)) {
+            return false;
+        }
+
+        // Ensure king does not move through check by simulating the moves
+        int middleCol = kingside ? 6 : 4;  // Middle position between start and end
+        ChessMove midMove = new ChessMove(kingStart, new ChessPosition(kingStart.getRow(), middleCol), null);
+        ChessMove finalMove = new ChessMove(kingStart, kingEnd, null);
+
+        return safeMove(midMove) && safeMove(finalMove);
     }
 
     // Helper method to check if the path between the king and the rook is clear
