@@ -13,12 +13,7 @@ public class ChessGame {
     private TeamColor currTurn;
     private ChessBoard currBoard;
     private ChessMove lastMove;
-    private boolean whiteKingMoved = false;
-    private boolean blackKingMoved = false;
-    private boolean whiteRookLeftMoved = false;
-    private boolean whiteRookRightMoved = false;
-    private boolean blackRookLeftMoved = false;
-    private boolean blackRookRightMoved = false;
+
     public ChessGame() {
         currBoard = new ChessBoard(); // creates the chessboard
         currBoard.resetBoard(); // sets all the pieces
@@ -75,90 +70,7 @@ public class ChessGame {
             legalMoves.addAll(enPassant(startPosition));
         }
 
-        // castling
-        if (movePiece.getPieceType() == ChessPiece.PieceType.KING) {
-            legalMoves.addAll(castle(startPosition));
-        }
-
         return legalMoves;
-    }
-
-    private Collection<ChessMove> castle(ChessPosition kingPos) {
-        Collection<ChessMove> moves = new ArrayList<>();
-        TeamColor color = getBoard().getPiece(kingPos).getTeamColor();
-
-        // Ensure king is in its starting position
-        int row = (color == TeamColor.WHITE) ? 1 : 8;
-        ChessPosition kingStart = new ChessPosition(row, 5);
-
-        if (!kingPos.equals(kingStart) || isInCheck(color)) return moves; // King must be in initial position & not in check
-
-        // Kingside castling
-        if (canCastle(kingStart, new ChessPosition(row, 7), new ChessPosition(row, 8), color, true)) {
-            moves.add(new ChessMove(kingPos, new ChessPosition(row, 7), null));
-        }
-
-        // Queenside castling
-        if (canCastle(kingStart, new ChessPosition(row, 3), new ChessPosition(row, 1), color, false)) {
-            moves.add(new ChessMove(kingPos, new ChessPosition(row, 3), null));
-        }
-
-        return moves;
-    }
-
-    private boolean canCastle(ChessPosition kingStart, ChessPosition kingEnd, ChessPosition rookPos, TeamColor color, boolean kingside) {
-        // Ensure king and rook have not moved
-        if (color == TeamColor.WHITE && (whiteKingMoved ||
-                (kingside ? whiteRookRightMoved : whiteRookLeftMoved))) {
-            return false;
-        }
-        if (color == TeamColor.BLACK && (blackKingMoved ||
-                (kingside ? blackRookRightMoved : blackRookLeftMoved))) {
-            return false;
-        }
-
-        // Ensure rook exists and is in the right position
-        ChessPiece rook = getBoard().getPiece(rookPos);
-        if (rook == null || rook.getPieceType() != ChessPiece.PieceType.ROOK || rook.getTeamColor() != color) {
-            return false;
-        }
-
-        // Ensure path is clear
-        if (!isPathClear(kingStart, rookPos)) {
-            return false;
-        }
-
-        // Ensure king does not move through check by simulating the moves
-        int middleCol = kingside ? 6 : 4;  // Middle position between start and end
-        ChessMove midMove = new ChessMove(kingStart, new ChessPosition(kingStart.getRow(), middleCol), null);
-        ChessMove finalMove = new ChessMove(kingStart, kingEnd, null);
-
-        return safeMove(midMove) && safeMove(finalMove);
-    }
-
-    // Helper method to check if the path between the king and the rook is clear
-    private boolean isPathClear(ChessPosition kingStart, ChessPosition kingEnd) {
-        int startColumn = kingStart.getColumn();
-        int endColumn = kingEnd.getColumn();
-        int row = kingStart.getRow();
-
-        // Check for squares between the king and rook
-        if (startColumn < endColumn) {
-            // Check for kingside castling
-            for (int col = startColumn + 1; col < endColumn; col++) {
-                if (getBoard().getPiece(new ChessPosition(row, col)) != null) {
-                    return false;  // Path is blocked
-                }
-            }
-        } else {
-            // Check for queenside castling
-            for (int col = startColumn - 1; col > endColumn; col--) {
-                if (getBoard().getPiece(new ChessPosition(row, col)) != null) {
-                    return false;  // Path is blocked
-                }
-            }
-        }
-        return true;
     }
 
     private Collection<ChessMove> enPassant(ChessPosition pos){
@@ -230,33 +142,6 @@ public class ChessGame {
         // handle enPassant
         if(piece.getPieceType() == ChessPiece.PieceType.PAWN && lastMove != null &&  Math.abs(move.getStartPosition().getColumn() - lastMove.getEndPosition().getColumn()) == 1 && move.getEndPosition().equals(new ChessPosition(lastMove.getEndPosition().getRow() + (piece.getTeamColor() == TeamColor.WHITE ? 1 : -1), lastMove.getEndPosition().getColumn()))){
             getBoard().removePiece(lastMove.getEndPosition());
-        }
-
-        // handle castling
-        if (piece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(move.getStartPosition().getColumn() - move.getEndPosition().getColumn()) == 2) {
-            // Kingside Castling
-            if (move.getEndPosition().getColumn() == 7) {
-                getBoard().addPiece(new ChessPosition(move.getStartPosition().getRow(), 6), getBoard().getPiece(new ChessPosition(move.getStartPosition().getRow(), 8)));
-                getBoard().removePiece(new ChessPosition(move.getStartPosition().getRow(), 8));
-            }
-            // Queenside Castling
-            else if (move.getEndPosition().getColumn() == 3) {
-                getBoard().addPiece(new ChessPosition(move.getStartPosition().getRow(), 4), getBoard().getPiece(new ChessPosition(move.getStartPosition().getRow(), 1)));
-                getBoard().removePiece(new ChessPosition(move.getStartPosition().getRow(), 1));
-            }
-        }
-
-        if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-            if (piece.getTeamColor() == TeamColor.WHITE) whiteKingMoved = true;
-            else blackKingMoved = true;
-        } else if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
-            if (piece.getTeamColor() == TeamColor.WHITE) {
-                if (move.getStartPosition().getColumn() == 1) whiteRookLeftMoved = true;
-                if (move.getStartPosition().getColumn() == 8) whiteRookRightMoved = true;
-            } else {
-                if (move.getStartPosition().getColumn() == 1) blackRookLeftMoved = true;
-                if (move.getStartPosition().getColumn() == 8) blackRookRightMoved = true;
-            }
         }
 
         // actually move the pieces (copy piece to new spot, set old spot to null)
