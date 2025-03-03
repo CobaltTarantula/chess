@@ -12,4 +12,6 @@ public interface AuthDAO {
     void removeAllAuthTokens() throws DataAccessException;
 
     boolean isEmpty() throws DataAccessException;
+
+    public Boolean verifyAuth(String authToken) throws DataAccessException;
 }

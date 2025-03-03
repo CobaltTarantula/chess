@@ -33,4 +33,9 @@ public class MemAuthDAO implements AuthDAO{
     public boolean isEmpty() {
         return auths.isEmpty();
     }
+
+    @Override
+    public Boolean verifyAuth(String authToken) throws DataAccessException {
+        return auths.containsKey(authToken);
+    }
 }
