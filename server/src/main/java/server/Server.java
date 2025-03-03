@@ -1,19 +1,13 @@
 package server;
 
 import spark.*;
-import com.google.gson.Gson;
-import model.*;
-import service.*;
 import dataaccess.*;
-
-import java.util.Collection;
-import java.util.Map;
 
 public class Server {
 
-    private final UserDAO users = new MemoryUserDAO();
-    private final GameDAO games = new MemoryGameDAO();
-    private final AuthDAO auths = new MemoryAuthDAO();
+    private final UserDAO users = new MemUserDAO();
+    private final GameDAO games = new MemGameDAO();
+    private final AuthDAO auths = new MemAuthDAO();
 
     private final UserService userService = new UserService(auths, users);
     private final GameService gameService = new GameService(auths, games);
