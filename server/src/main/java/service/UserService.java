@@ -1,8 +1,10 @@
 package service;
 
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.UserDAO;
+import dataaccess.*;
+import model.AuthData;
+import model.UserData;
+
+import java.util.Objects;
 
 public class UserService {
     private final UserDAO userDAO;
@@ -13,14 +15,36 @@ public class UserService {
         this.authDAO = authDAO;
     }
 
-    public String loginUser(String username, String password) throws DataAccessException {
-        if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
-            throw new IllegalArgumentException("Username and password are required");
+    public AuthData register(UserData user) throws DataAccessException {
+        if (user.username() == null || user.password() == null || user.email() == null) {
+            throw new DataAccessException("bad request");
         }
-        if (userDAO.getUser(username) == null) {
-            throw new DataAccessException("No user found");
+
+        if (userDAO.getUser(user.username()) != null) {
+            throw new DataAccessException("this username is already taken");
         }
-        return authDAO.createAuth(username);
+
+        userDAO.createUser(user);
+        String username = user.username();
+        String token = authDAO.createAuth(username);
+
+        return new AuthData(token, username);
+    }
+
+    public AuthData loginUser(UserData user) throws DataAccessException {
+        if (user.username() == null || user.password() == null || user.email() == null) {
+            throw new DataAccessException("bad request");
+        }
+
+        if (userDAO.getUser(user.username()) != null) {
+            throw new DataAccessException("already taken");
+        }
+
+        userDAO.createUser(user);
+        String username = user.username();
+        String token = authDAO.createAuth(username);
+
+        return new AuthData(token, username);
     }
 
     private boolean verifyAuth(String authToken) throws DataAccessException {
