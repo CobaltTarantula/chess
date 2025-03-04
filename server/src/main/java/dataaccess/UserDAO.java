@@ -3,13 +3,11 @@ package dataaccess;
 import model.UserData;
 
 public interface UserDAO {
-    void createUser(String username, String password, String email) throws DataAccessException;
+    void createUser(UserData user) throws DataAccessException;
 
-    UserData getUser(String username, String password) throws DataAccessException;
+    UserData getUser(String username) throws DataAccessException;
 
-    void clear() throws DataAccessException;
+    void removeAllUsers() throws DataAccessException;
 
-    Integer getSize() throws DataAccessException;
-
-    Boolean verifyUser(String username) throws DataAccessException;
+    boolean isEmpty() throws DataAccessException;
 }

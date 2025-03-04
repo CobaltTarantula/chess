@@ -1,5 +1,6 @@
 package server;
 
+import service.ClearService;
 import service.GameService;
 import service.UserService;
 import spark.*;

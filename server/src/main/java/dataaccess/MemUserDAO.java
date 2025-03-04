@@ -3,38 +3,28 @@ package dataaccess;
 import model.UserData;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
-public class MemUserDAO implements UserDAO{
-    protected static Map<String, UserData> users = new HashMap<>();
+public class MemUserDAO implements UserDAO {
+    private HashMap<String, UserData> users;
 
-    @Override
-    public void createUser(String username, String password, String email) {
-        UserData user = new UserData(username, password, email);
-        users.put(username, user);
+    public MemUserDAO() {
+        users = new HashMap<>();
     }
 
-    @Override
-    public UserData getUser(String username, String password) {
-        if (users.containsKey(username) && Objects.equals(users.get(username).password(), password)) {
-            return users.get(username);
-        }
-        return null;
+    public void createUser(UserData user) {
+        users.put(user.username(), user);
+    }
+    /* TODO: STORE PASSWORD AS A HASH (in server?  non't hash it on the client's side)*/
+
+    public UserData getUser(String username) {
+        return users.get(username);
     }
 
-    @Override
-    public void clear(){
+    public void removeAllUsers() {
         users.clear();
     }
 
-    @Override
-    public Integer getSize(){
-        return users.size();
-    }
-
-    @Override
-    public Boolean verifyUser(String username){
-        return users.containsKey(username);
+    public boolean isEmpty() {
+        return users.isEmpty();
     }
 }

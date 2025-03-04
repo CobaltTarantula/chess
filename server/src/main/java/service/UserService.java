@@ -17,7 +17,7 @@ public class UserService {
         if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
             throw new IllegalArgumentException("Username and password are required");
         }
-        if (userDAO.getUser(username, password) == null) {
+        if (userDAO.getUser(username) == null) {
             throw new DataAccessException("No user found");
         }
         return authDAO.createAuth(username);
