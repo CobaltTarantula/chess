@@ -141,3 +141,4 @@ try(Connection c = DriverManager.getConnection(connectionURL)){
 * setup connectionURL so it gets user and pass from configuration file
 ### Assembly
 * JDBC in code that creates the database
+## REMEMBER TO CALL THE THING THAT MAKES THE DATABASE **IN** THE CODE
