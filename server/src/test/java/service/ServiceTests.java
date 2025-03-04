@@ -29,7 +29,7 @@ public class ServiceTests {
     }
 
     @Nested
-    class testRegister {
+    class TestRegister {
         @Test
         public void testIncorrectInput() {
             UserDAO users = new MemUserDAO();
@@ -69,7 +69,7 @@ public class ServiceTests {
     }
 
     @Nested
-    class testLogin {
+    class TestLogin {
         @Test
         public void testBadPassword() throws DataAccessException {
             UserDAO users = new MemUserDAO();
@@ -127,7 +127,7 @@ public class ServiceTests {
     }
 
     @Nested
-    class testLogout {
+    class TestLogout {
         @Test
         public void testLogoutSuccess() throws DataAccessException {
             UserDAO users = new MemUserDAO();
@@ -159,7 +159,7 @@ public class ServiceTests {
     }
 
     @Nested
-    class testCreateGame {
+    class TestCreateGame {
         @Test
         public void testCreateGameSuccess() throws DataAccessException {
             UserDAO users = new MemUserDAO();
@@ -206,7 +206,7 @@ public class ServiceTests {
     }
 
     @Nested
-    class testListGame {
+    class TestListGame {
         @Test
         public void testListGameSuccess() throws DataAccessException {
             UserDAO users = new MemUserDAO();
@@ -258,7 +258,7 @@ public class ServiceTests {
     }
 
     @Nested
-    class testJoinGame {
+    class TestJoinGame {
         @Test
         public void testJoinGameSuccess() throws DataAccessException {
             UserDAO users = new MemUserDAO();

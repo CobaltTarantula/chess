@@ -29,7 +29,7 @@ public class MemGameDAO implements GameDAO{
         return games.values();
     }
 
-    public GameData SaveGame(int gameID, GameData game) {
+    public GameData saveGame(int gameID, GameData game) {
         if (games.containsKey(gameID)) {
             games.put(gameID, game);
             return game;
