@@ -34,12 +34,10 @@ public class UserService {
             throw new DataAccessException("must fill all fields");
         }
 
-        // check for bad username
         if (userDAO.getUser(user.username()) == null) {
             throw new DataAccessException("unauthorized");
         }
 
-        // check if given password matches the one in the database
         UserData savedUser = userDAO.getUser(user.username());
         if (!verifyPassword(user.password(), savedUser.password())) {
             throw new DataAccessException("unauthorized");
@@ -67,13 +65,9 @@ public class UserService {
     }
 
     public boolean logoutUser(String authToken) throws DataAccessException {
-        // check if authToken is correct
         if (verifyAuth(authToken)) {
-            // delete authToken from database
             authDAO.deleteAuth(authToken);
         }
-
-        // return true if logout is successful
         return authDAO.getAuth(authToken) == null;
     }
 }

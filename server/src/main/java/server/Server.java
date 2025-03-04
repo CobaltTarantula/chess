@@ -45,7 +45,6 @@ public class Server {
     }
 
     // handlers
-
     private Object registerHandler(Request req, Response res) {
         try {
             var serializer = new Gson();

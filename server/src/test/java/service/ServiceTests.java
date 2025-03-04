@@ -13,17 +13,14 @@ public class ServiceTests {
 
     @Test
     public void testClearService() throws DataAccessException {
-        // make test DAOs
         UserDAO users = new MemUserDAO();
         GameDAO games = new MemGameDAO();
         AuthDAO auths = new MemAuthDAO();
 
-        // populate the test DAOs
         users.createUser(new UserData("testUser", "testPassword", "testEmail"));
         games.createGame("testGame", 1);
         auths.createAuth("testUsername");
 
-        // create and call
         ClearService testClearService = new ClearService(users, games, auths);
         if (testClearService.clear() == null) {
             System.out.println("Data Cleared Successfully!");
@@ -40,7 +37,6 @@ public class ServiceTests {
             AuthDAO auths = new MemAuthDAO();
             UserService userService = new UserService(auths, users);
 
-            // run test here -> should throw exception "bad request"
             Exception exception = assertThrows(DataAccessException.class, () -> {
                 userService.register(new UserData("no password giver", null, "IhatePasswords@live.com"));
             });
@@ -52,10 +48,8 @@ public class ServiceTests {
             UserDAO users = new MemUserDAO();
             AuthDAO auths = new MemAuthDAO();
 
-            // store a user with the username "copycat"
             users.createUser(new UserData("copycat", "testPassword", "testEmail"));
 
-            // run test here -> should throw exception "already taken"
             UserService userService = new UserService(auths, users);
             Exception exception = assertThrows(DataAccessException.class, () -> {
                 userService.register(new UserData("copycat", "testPassword", "testEmail"));
@@ -69,7 +63,6 @@ public class ServiceTests {
             AuthDAO auths = new MemAuthDAO();
             UserService userService = new UserService(auths, users);
 
-            // run test here -> should return an AuthData object
             AuthData testAuthData = userService.register(new UserData("testUser", "testPassword", "testEmail"));
             System.out.println("AuthData: " + testAuthData);
         }
@@ -83,10 +76,8 @@ public class ServiceTests {
             UserDAO users = new MemUserDAO();
             AuthDAO auths = new MemAuthDAO();
 
-            // store a user with the username "testUser"
             users.createUser(new UserData("testUser", "testPassword", "testEmail"));
 
-            // run test here -> should throw exception "unauthorized"
             UserService userService = new UserService(auths, users);
             Exception exception = assertThrows(DataAccessException.class, () -> {
                 userService.loginUser(new UserData("testUser", "wrongPassword", "testEmail"));
@@ -99,10 +90,8 @@ public class ServiceTests {
             UserDAO users = new MemUserDAO();
             AuthDAO auths = new MemAuthDAO();
 
-            // store a user with the username "testUser"
             users.createUser(new UserData("testUser", "testPassword", "testEmail"));
 
-            // run test here -> should throw exception "unauthorized"
             UserService userService = new UserService(auths, users);
             Exception exception = assertThrows(DataAccessException.class, () -> {
                 userService.loginUser(new UserData("testUser", "wrongPassword", "testEmail"));
@@ -115,10 +104,8 @@ public class ServiceTests {
             UserDAO users = new MemUserDAO();
             AuthDAO auths = new MemAuthDAO();
 
-            // store a user with the username "testUser"
             users.createUser(new UserData("testUser", "testPassword", "testEmail"));
 
-            // run test here -> should throw exception "must fill all fields"
             UserService userService = new UserService(auths, users);
             Exception exception = assertThrows(DataAccessException.class, () -> {
                 userService.loginUser(new UserData("testUser", null, "testEmail"));
@@ -131,10 +118,8 @@ public class ServiceTests {
             UserDAO users = new MemUserDAO();
             AuthDAO auths = new MemAuthDAO();
 
-            // store a user with the username "testUser"
             users.createUser(new UserData("testUser", "testPassword", "testEmail"));
 
-            // run test here -> should return an AuthData object
             UserService userService = new UserService(auths, users);
             AuthData testAuthData = userService.loginUser(new UserData("testUser", "testPassword", "testEmail"));
             System.out.println("AuthData: " + testAuthData);
@@ -150,15 +135,11 @@ public class ServiceTests {
             AuthDAO auths = new MemAuthDAO();
             UserService userService = new UserService(auths, users);
 
-            // create and register a test user
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
             userService.register(testUser);
 
-            // login the test user
             AuthData testToken = userService.loginUser(testUser);
 
-
-            // run test here -> should print "Logout Successful!"
             if (auths.verifyAuth(testToken.authToken())) System.out.println("Logout Successful!");
         }
 
@@ -168,14 +149,11 @@ public class ServiceTests {
             AuthDAO auths = new MemAuthDAO();
             UserService userService = new UserService(auths, users);
 
-            // create and register a test user
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
             userService.register(testUser);
 
-            // login the test user
-            AuthData testToken = userService.loginUser(testUser);
+//            AuthData testToken = userService.loginUser(testUser);
 
-            // run test here -> should print "unauthorized"
             Exception exception = assertThrows(DataAccessException.class, () -> {
                 userService.logoutUser("badToken");
             });
@@ -192,15 +170,12 @@ public class ServiceTests {
             AuthDAO auths = new MemAuthDAO();
             UserService userService = new UserService(auths, users);
 
-            // create and register a test user
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
             userService.register(testUser);
 
-            // login the test user, get auth token back
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
 
-            // TEST RUN HERE -> create game, get gameID back
             GameService gameService = new GameService(auths, games);
             Integer gameID = -1;
             gameID = gameService.createGame(token, "testGame");
@@ -210,27 +185,23 @@ public class ServiceTests {
         }
 
         @Test
-        public void testGameAlreadyExists() throws DataAccessException {
+        public void testDuplicateGame() throws DataAccessException {
             UserDAO users = new MemUserDAO();
             GameDAO games = new MemGameDAO();
             AuthDAO auths = new MemAuthDAO();
             UserService userService = new UserService(auths, users);
 
-            // create and register a test user
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
             userService.register(testUser);
 
-            // login the test user, get auth token back
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
 
 
             GameService gameService = new GameService(auths, games);
 
-            // create a game with the name "testGame"
             gameService.createGame(token, "testGame");
 
-            // TEST HERE -> create duplicate game "testGame"
             Exception exception = assertThrows(DataAccessException.class, () -> {
                 gameService.createGame(token, "testGame");
             });
@@ -247,23 +218,19 @@ public class ServiceTests {
             AuthDAO auths = new MemAuthDAO();
             UserService userService = new UserService(auths, users);
 
-            // create and register a test user
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
             userService.register(testUser);
 
-            // login the test user, get auth token back
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
 
 
             GameService gameService = new GameService(auths, games);
 
-            // create some games
             gameService.createGame(token, "testGame1");
             gameService.createGame(token, "testGame2");
             gameService.createGame(token, "testGame3");
 
-            // TEST HERE -> list games
             System.out.println("Games: " + gameService.listGames(token));
         }
 
@@ -274,23 +241,19 @@ public class ServiceTests {
             AuthDAO auths = new MemAuthDAO();
             UserService userService = new UserService(auths, users);
 
-            // create and register a test user
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
             userService.register(testUser);
 
-            // login the test user, get auth token back
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
 
 
             GameService gameService = new GameService(auths, games);
 
-            // create some games
             gameService.createGame(token, "testGame1");
             gameService.createGame(token, "testGame2");
             gameService.createGame(token, "testGame3");
 
-            // TEST HERE -> list games with bad token
             Exception exception = assertThrows(DataAccessException.class, () -> {
                 gameService.listGames("badToken");
             });
@@ -307,21 +270,17 @@ public class ServiceTests {
             AuthDAO auths = new MemAuthDAO();
             UserService userService = new UserService(auths, users);
 
-            // create and register a test user
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
             userService.register(testUser);
 
-            // login the test user, get auth token back
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
 
 
             GameService gameService = new GameService(auths, games);
 
-            // create a game
             Integer gameID = gameService.createGame(token, "testGame");
 
-            // TEST HERE -> join game
             GameData testGameData = gameService.joinGame(token,"WHITE",gameID);
             System.out.println("GameData: " + testGameData);
         }
@@ -333,33 +292,27 @@ public class ServiceTests {
             AuthDAO auths = new MemAuthDAO();
             UserService userService = new UserService(auths, users);
 
-            // create and register two test users
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
             UserData testUser2 = new UserData("testUser2", "testPassword2", "testEmail2");
             userService.register(testUser);
             userService.register(testUser2);
 
-            // login the test users, get auth tokens back
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
 
-            AuthData TestToken2 = userService.loginUser(testUser2);
+//            AuthData TestToken2 = userService.loginUser(testUser2);
             String token2 = testToken.authToken();
 
 
             GameService gameService = new GameService(auths, games);
 
-            // create a game, populate with a white player
             Integer gameID = gameService.createGame(token, "testGame");
             gameService.joinGame(token, "WHITE", gameID);
 
-            // TEST HERE -> join game with another white player
             Exception exception = assertThrows(DataAccessException.class, () -> {
                 gameService.joinGame(token2, "WHITE", gameID);
             });
             assertEquals("already taken", exception.getMessage());
         }
-
-        ;
     }
 }
