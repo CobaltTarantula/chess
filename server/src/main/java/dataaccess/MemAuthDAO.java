@@ -35,7 +35,7 @@ public class MemAuthDAO implements AuthDAO{
     }
 
     @Override
-    public Boolean verifyAuth(String authToken) throws DataAccessException {
+    public boolean verifyAuth(String authToken) {
         return auths.containsKey(authToken);
     }
 }

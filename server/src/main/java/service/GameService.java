@@ -20,9 +20,7 @@ public class GameService {
     }
 
     public Integer createGame(String authToken, String gameName) throws DataAccessException {
-        // validate authData
         if (isValid(authToken)) throw new DataAccessException("unauthorized");
-
         if (gameName == null) throw new DataAccessException("bad request");
 
         // from game name get ID
@@ -38,15 +36,11 @@ public class GameService {
     }
 
     public Collection<GameData> listGames(String authToken) throws DataAccessException {
-        // validate authData
         if (isValid(authToken)) throw new DataAccessException("unauthorized");
-
-        // return a listGames
         return gameDAO.listGames();
     }
 
     public GameData joinGame(String authToken, String playerColor, Integer gameID) throws DataAccessException {
-        // validate authData
         if (isValid(authToken)) throw new DataAccessException("unauthorized");
 
         // from authToken get username

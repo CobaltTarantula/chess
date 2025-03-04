@@ -5,7 +5,6 @@ import model.GameData;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.UUID;
 
 public class MemGameDAO implements GameDAO{
     private final HashMap<Integer, GameData> games;
@@ -30,7 +29,7 @@ public class MemGameDAO implements GameDAO{
         return games.values();
     }
 
-    public GameData SaveGame(int gameID, GameData game) throws DataAccessException {
+    public GameData SaveGame(int gameID, GameData game) {
         if (games.containsKey(gameID)) {
             games.put(gameID, game);
             return game;

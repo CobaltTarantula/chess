@@ -13,7 +13,7 @@ public class UserService {
         this.authDAO = authDAO;
     }
 
-    public AuthData register(UserData user) throws DataAccessException {
+    public AuthData registerUser(UserData user) throws DataAccessException {
         if (user.username() == null || user.password() == null || user.email() == null) {
             throw new DataAccessException("bad request");
         }
@@ -43,10 +43,6 @@ public class UserService {
             throw new DataAccessException("unauthorized");
         }
 
-//        if (userDAO.getUser(user.username()) != null) {
-//            throw new DataAccessException("already taken");
-//        }
-
         userDAO.createUser(user);
         String username = user.username();
         String token = authDAO.createAuth(username);
@@ -64,10 +60,10 @@ public class UserService {
         } else return true;
     }
 
-    public boolean logoutUser(String authToken) throws DataAccessException {
+    public void logoutUser(String authToken) throws DataAccessException {
         if (verifyAuth(authToken)) {
             authDAO.deleteAuth(authToken);
         }
-        return authDAO.getAuth(authToken) == null;
+        authDAO.getAuth(authToken);
     }
 }

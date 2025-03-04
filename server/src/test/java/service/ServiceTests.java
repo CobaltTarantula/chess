@@ -1,7 +1,6 @@
 package service;
 
 import model.*;
-//import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import dataaccess.*;
@@ -38,7 +37,7 @@ public class ServiceTests {
             UserService userService = new UserService(auths, users);
 
             Exception exception = assertThrows(DataAccessException.class, () -> {
-                userService.register(new UserData("no password giver", null, "IhatePasswords@live.com"));
+                userService.registerUser(new UserData("no password giver", null, "IhatePasswords@live.com"));
             });
             assertEquals("bad request", exception.getMessage());
         }
@@ -52,7 +51,7 @@ public class ServiceTests {
 
             UserService userService = new UserService(auths, users);
             Exception exception = assertThrows(DataAccessException.class, () -> {
-                userService.register(new UserData("copycat", "testPassword", "testEmail"));
+                userService.registerUser(new UserData("copycat", "testPassword", "testEmail"));
             });
             assertEquals("already taken", exception.getMessage());
         }
@@ -63,7 +62,7 @@ public class ServiceTests {
             AuthDAO auths = new MemAuthDAO();
             UserService userService = new UserService(auths, users);
 
-            AuthData testAuthData = userService.register(new UserData("testUser", "testPassword", "testEmail"));
+            AuthData testAuthData = userService.registerUser(new UserData("testUser", "testPassword", "testEmail"));
             System.out.println("AuthData: " + testAuthData);
         }
 
@@ -136,7 +135,7 @@ public class ServiceTests {
             UserService userService = new UserService(auths, users);
 
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
-            userService.register(testUser);
+            userService.registerUser(testUser);
 
             AuthData testToken = userService.loginUser(testUser);
 
@@ -150,9 +149,7 @@ public class ServiceTests {
             UserService userService = new UserService(auths, users);
 
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
-            userService.register(testUser);
-
-//            AuthData testToken = userService.loginUser(testUser);
+            userService.registerUser(testUser);
 
             Exception exception = assertThrows(DataAccessException.class, () -> {
                 userService.logoutUser("badToken");
@@ -171,14 +168,13 @@ public class ServiceTests {
             UserService userService = new UserService(auths, users);
 
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
-            userService.register(testUser);
+            userService.registerUser(testUser);
 
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
 
             GameService gameService = new GameService(auths, games);
-            Integer gameID = -1;
-            gameID = gameService.createGame(token, "testGame");
+            Integer gameID = gameService.createGame(token, "testGame");
 
             if (gameID == -1) System.out.println("ERROR: Game not created");
             else System.out.println("SUCCESS! :: GameID: " + gameID);
@@ -192,7 +188,7 @@ public class ServiceTests {
             UserService userService = new UserService(auths, users);
 
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
-            userService.register(testUser);
+            userService.registerUser(testUser);
 
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
@@ -219,7 +215,7 @@ public class ServiceTests {
             UserService userService = new UserService(auths, users);
 
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
-            userService.register(testUser);
+            userService.registerUser(testUser);
 
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
@@ -242,7 +238,7 @@ public class ServiceTests {
             UserService userService = new UserService(auths, users);
 
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
-            userService.register(testUser);
+            userService.registerUser(testUser);
 
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
@@ -271,7 +267,7 @@ public class ServiceTests {
             UserService userService = new UserService(auths, users);
 
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
-            userService.register(testUser);
+            userService.registerUser(testUser);
 
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
@@ -294,13 +290,12 @@ public class ServiceTests {
 
             UserData testUser = new UserData("testUser", "testPassword", "testEmail");
             UserData testUser2 = new UserData("testUser2", "testPassword2", "testEmail2");
-            userService.register(testUser);
-            userService.register(testUser2);
+            userService.registerUser(testUser);
+            userService.registerUser(testUser2);
 
             AuthData testToken = userService.loginUser(testUser);
             String token = testToken.authToken();
 
-//            AuthData TestToken2 = userService.loginUser(testUser2);
             String token2 = testToken.authToken();
 
 

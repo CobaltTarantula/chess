@@ -8,7 +8,6 @@ import dataaccess.*;
 
 import com.google.gson.Gson;
 import model.*;
-//import service.*;
 
 import java.util.Collection;
 import java.util.Map;
@@ -50,7 +49,7 @@ public class Server {
             var serializer = new Gson();
             UserData request = serializer.fromJson(req.body(), UserData.class);
 
-            AuthData result = userService.register(request);
+            AuthData result = userService.registerUser(request);
 
             res.status(200);
             var body = serializer.toJson(Map.of("username", result.username(), "authToken", result.authToken()));
@@ -159,8 +158,6 @@ public class Server {
             return errorHandler(e, res);
         }
     }
-
-    /* end handlers*/
 
     public Object errorHandler(Exception e, Response res) {
         String errorMessage = e.getMessage();
