@@ -4,8 +4,6 @@ import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 
-import java.util.Objects;
-
 public class UserService {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
@@ -68,10 +66,14 @@ public class UserService {
         } else return true;
     }
 
-    public void logoutUser(String token) throws DataAccessException {
-        if (!authDAO.verifyAuth(token)) {
-            throw new DataAccessException("Invalid token");
+    public boolean logoutUser(String authToken) throws DataAccessException {
+        // check if authToken is correct
+        if (verifyAuth(authToken)) {
+            // delete authToken from database
+            authDAO.deleteAuth(authToken);
         }
-        authDAO.deleteAuth(token);
+
+        // return true if logout is successful
+        return authDAO.getAuth(authToken) == null;
     }
 }
