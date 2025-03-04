@@ -33,7 +33,7 @@ public class UserService {
 
     public AuthData loginUser(UserData user) throws DataAccessException {
         if (user.username() == null || user.password() == null || user.email() == null) {
-            throw new DataAccessException("bad request");
+            throw new DataAccessException("must fill all fields");
         }
 
         // check for bad username
@@ -41,15 +41,15 @@ public class UserService {
             throw new DataAccessException("unauthorized");
         }
 
-        if (userDAO.getUser(user.username()) != null) {
-            throw new DataAccessException("already taken");
-        }
-
         // check if given password matches the one in the database
         UserData savedUser = userDAO.getUser(user.username());
         if (!verifyPassword(user.password(), savedUser.password())) {
             throw new DataAccessException("unauthorized");
         }
+
+//        if (userDAO.getUser(user.username()) != null) {
+//            throw new DataAccessException("already taken");
+//        }
 
         userDAO.createUser(user);
         String username = user.username();
