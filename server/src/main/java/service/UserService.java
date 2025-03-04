@@ -21,7 +21,7 @@ public class UserService {
         }
 
         if (userDAO.getUser(user.username()) != null) {
-            throw new DataAccessException("this username is already taken");
+            throw new DataAccessException("already taken");
         }
 
         userDAO.createUser(user);
@@ -36,8 +36,19 @@ public class UserService {
             throw new DataAccessException("bad request");
         }
 
+        // check for bad username
+        if (userDAO.getUser(user.username()) == null) {
+            throw new DataAccessException("unauthorized");
+        }
+
         if (userDAO.getUser(user.username()) != null) {
             throw new DataAccessException("already taken");
+        }
+
+        // check if given password matches the one in the database
+        UserData savedUser = userDAO.getUser(user.username());
+        if (!verifyPassword(user.password(), savedUser.password())) {
+            throw new DataAccessException("unauthorized");
         }
 
         userDAO.createUser(user);
@@ -45,6 +56,10 @@ public class UserService {
         String token = authDAO.createAuth(username);
 
         return new AuthData(token, username);
+    }
+
+    private boolean verifyPassword(String givenPassword, String savedPassword) {
+        return givenPassword.equals(savedPassword);
     }
 
     private boolean verifyAuth(String authToken) throws DataAccessException {
