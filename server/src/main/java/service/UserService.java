@@ -30,7 +30,7 @@ public class UserService {
     }
 
     public AuthData loginUser(UserData user) throws DataAccessException {
-        if (user.username() == null || user.password() == null || user.email() == null) {
+        if (user.username() == null || user.password() == null) {
             throw new DataAccessException("must fill all fields");
         }
 
