@@ -57,7 +57,7 @@ public class UserService {
     private boolean verifyAuth(String authToken) throws DataAccessException {
         if (authToken == null || authDAO.getAuth(authToken) == null) {
             throw new DataAccessException("unauthorized");
-        } else return true;
+        } else{ return true;}
     }
 
     public void logoutUser(String authToken) throws DataAccessException {

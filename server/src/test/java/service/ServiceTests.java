@@ -93,7 +93,7 @@ public class ServiceTests {
 
             UserService userService = new UserService(auths, users);
             Exception exception = assertThrows(DataAccessException.class, () -> {
-                userService.loginUser(new UserData("testUser", "wrongPassword", "testEmail"));
+                userService.loginUser(new UserData("wrongUser", "testPassword", "testEmail"));
             });
             assertEquals("unauthorized", exception.getMessage());
         }
@@ -139,7 +139,7 @@ public class ServiceTests {
 
             AuthData testToken = userService.loginUser(testUser);
 
-            if (auths.verifyAuth(testToken.authToken())) System.out.println("Logout Successful!");
+            if(auths.verifyAuth(testToken.authToken())){ System.out.println("Logout Successful!");}
         }
 
         @Test
@@ -176,8 +176,8 @@ public class ServiceTests {
             GameService gameService = new GameService(auths, games);
             Integer gameID = gameService.createGame(token, "testGame");
 
-            if (gameID == -1) System.out.println("ERROR: Game not created");
-            else System.out.println("SUCCESS! :: GameID: " + gameID);
+            if(gameID == -1){ System.out.println("ERROR: Game not created");}
+            else{ System.out.println("SUCCESS! :: GameID: " + gameID);}
         }
 
         @Test

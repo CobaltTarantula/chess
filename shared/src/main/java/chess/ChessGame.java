@@ -82,7 +82,9 @@ public class ChessGame {
             return moves;
         }
 
-        if(lastMove == null) return moves;
+        if(lastMove == null){
+            return moves;
+        }
 
         ChessPosition lastStart = lastMove.getStartPosition();
         ChessPosition lastEnd = lastMove.getEndPosition();
@@ -200,7 +202,9 @@ public class ChessGame {
         // iterate over moves to see if any of opponents moves lands them on king
         for(ChessMove move: allMoves){
             // if so, return true
-            if (move.getEndPosition().equals(kingPosition(teamColor, board))) return true;
+            if (move.getEndPosition().equals(kingPosition(teamColor, board))){
+                return true;
+            }
         }
         return false;
     }

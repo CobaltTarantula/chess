@@ -68,7 +68,7 @@ public class ChessPiece {
                 assert paths != null;
                 for (int[] path : paths) {
                     ChessMove newMove = getPathSpot(board, myPosition, path[0], path[1]);
-                    if (newMove != null) moves.add(newMove);
+                    if (newMove != null){ moves.add(newMove);}
                 }
             }
             case PAWN -> {
@@ -199,14 +199,14 @@ public class ChessPiece {
             int newCol = myPos.getColumn() + (i * horizon);
             ChessPosition newPos = new ChessPosition(newRow, newCol);
 
-            if (isOutOfBounds(newPos)) break;
+            if (isOutOfBounds(newPos)){ break;}
 
             if (isOccupied(board, newPos)) {
                 if (board.getPiece(newPos).getTeamColor() != this.getTeamColor()){ // opponent's piece
                     possibleMoves.add(new ChessMove(myPos, newPos, null));
                 }
                 break;
-            } else possibleMoves.add(new ChessMove(myPos, newPos, null));
+            } else{ possibleMoves.add(new ChessMove(myPos, newPos, null));}
         }
         return possibleMoves;
     }
@@ -224,9 +224,9 @@ public class ChessPiece {
             if (board.getPiece(newPos).getTeamColor() != this.getTeamColor()) { // opponent's piece
                 return new ChessMove(myPos, newPos, null);
             }
-            else return null;
+            else{ return null;}
         }
-        else return new ChessMove(myPos, newPos, null);
+        else{ return new ChessMove(myPos, newPos, null);}
     }
 
     private ChessMove getPawnMove(ChessBoard board, ChessPosition myPos, int vert, int horizon) {
@@ -234,7 +234,7 @@ public class ChessPiece {
         int nextCol = myPos.getColumn() + horizon;
         ChessPosition nextPos = new ChessPosition(nextRow, nextCol);
 
-        if (isOutOfBounds(nextPos)) return null;
+        if (isOutOfBounds(nextPos)){ return null;}
         boolean occupied = isOccupied(board, nextPos);
 
         if (horizon != 0){
@@ -244,7 +244,7 @@ public class ChessPiece {
         }
 
         else {
-            if (!occupied) return new ChessMove(myPos, nextPos, null);
+            if (!occupied){ return new ChessMove(myPos, nextPos, null);}
         }
 
         return null;
@@ -253,10 +253,10 @@ public class ChessPiece {
     private boolean isFirstMove(ChessGame.TeamColor teamColor, ChessPosition myPos) {
         switch (teamColor){
             case WHITE -> {
-                if (myPos.getRow() == 2) return true;
+                if (myPos.getRow() == 2){ return true;}
             }
             case BLACK -> {
-                if (myPos.getRow() == 7) return true;
+                if (myPos.getRow() == 7){ return true;}
             }
         }
         return false;
@@ -265,10 +265,10 @@ public class ChessPiece {
     private boolean canPromote(ChessMove newMove, ChessGame.TeamColor teamColor) {
         switch(teamColor){
             case WHITE -> {
-                if (newMove.getEndPosition().getRow() == 8) return true;
+                if (newMove.getEndPosition().getRow() == 8){ return true;}
             }
             case BLACK -> {
-                if (newMove.getEndPosition().getRow() == 1) return true;
+                if (newMove.getEndPosition().getRow() == 1){ return true;}
             }
         }
         return false;

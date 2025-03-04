@@ -18,8 +18,8 @@ public class ClearService {
         games.removeAllGames();
         auths.removeAllAuthTokens();
 
-        if (clearStatus()) return null;
-        else throw new DataAccessException("data not cleared.");
+        if (clearStatus()){ return null;}
+        else{ throw new DataAccessException("data not cleared.");}
     }
 
     private boolean clearStatus() throws DataAccessException {

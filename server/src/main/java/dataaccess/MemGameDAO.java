@@ -33,7 +33,7 @@ public class MemGameDAO implements GameDAO{
         if (games.containsKey(gameID)) {
             games.put(gameID, game);
             return game;
-        } else return null;
+        } else{ return null;}
     }
 
     public void removeAllGames() {
