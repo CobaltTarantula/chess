@@ -53,7 +53,9 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece movePiece = getBoard().getPiece(startPosition); // identify piece to move
-        if(movePiece == null) return null; // if no piece at position, there are no moves to make from that spot
+        if(movePiece == null){
+            return null;
+        } // if no piece at position, there are no moves to make from that spot
 
         Collection<ChessMove> possMoves = movePiece.pieceMoves(getBoard(), startPosition); // retrieve valid/possible moves
 
@@ -76,7 +78,9 @@ public class ChessGame {
     private Collection<ChessMove> enPassant(ChessPosition pos){
         Collection<ChessMove> moves = new ArrayList<>();
         ChessPiece piece = getBoard().getPiece(pos);
-        if(piece == null || piece.getPieceType() != ChessPiece.PieceType.PAWN) return moves;
+        if(piece == null || piece.getPieceType() != ChessPiece.PieceType.PAWN){
+            return moves;
+        }
 
         if(lastMove == null) return moves;
 
@@ -84,7 +88,9 @@ public class ChessGame {
         ChessPosition lastEnd = lastMove.getEndPosition();
         ChessPiece lastPiece = getBoard().getPiece(lastEnd);
 
-        if(lastPiece == null || lastPiece.getPieceType()!= ChessPiece.PieceType.PAWN) return moves;
+        if(lastPiece == null || lastPiece.getPieceType()!= ChessPiece.PieceType.PAWN){
+            return moves;
+        }
 
         if(Math.abs(lastStart.getRow() - lastEnd.getRow()) == 2){
             if(Math.abs(lastEnd.getColumn() - pos.getColumn()) == 1){
@@ -99,7 +105,9 @@ public class ChessGame {
     private boolean safeMove(ChessMove move){
         ChessBoard test = testBoard(getBoard());
         ChessPiece movingPiece = test.getPiece(move.getStartPosition());
-        if(movingPiece == null) return false; // no piece to move
+        if(movingPiece == null){
+            return false; // no piece to move
+        }
 
         // Apply the move on the test board
         test.removePiece(move.getEndPosition()); // Remove any captured piece
@@ -131,16 +139,26 @@ public class ChessGame {
         }
 
         // check for check
-        if(!safeMove(move)) throw new InvalidMoveException("Unsafe move leaves your king in check.");
+        if(!safeMove(move)){
+            throw new InvalidMoveException("Unsafe move leaves your king in check.");
+        }
 
         // check for checkmate
-        if(isInCheckmate(getTeamTurn())) throw new InvalidMoveException("CHECKMATE.");
+        if(isInCheckmate(getTeamTurn())){
+            throw new InvalidMoveException("CHECKMATE.");
+        }
 
         // check for stalemate
-        if(isInStalemate(getTeamTurn())) throw new InvalidMoveException("STALEMATE.");
+        if(isInStalemate(getTeamTurn())){
+            throw new InvalidMoveException("STALEMATE.");
+        }
 
         // handle enPassant
-        if(piece.getPieceType() == ChessPiece.PieceType.PAWN && lastMove != null &&  Math.abs(move.getStartPosition().getColumn() - lastMove.getEndPosition().getColumn()) == 1 && move.getEndPosition().equals(new ChessPosition(lastMove.getEndPosition().getRow() + (piece.getTeamColor() == TeamColor.WHITE ? 1 : -1), lastMove.getEndPosition().getColumn()))){
+        if(piece.getPieceType() == ChessPiece.PieceType.PAWN &&
+                lastMove != null &&
+                Math.abs(move.getStartPosition().getColumn() - lastMove.getEndPosition().getColumn()) == 1 &&
+                move.getEndPosition().equals(new ChessPosition(lastMove.getEndPosition().getRow() +
+                        (piece.getTeamColor() == TeamColor.WHITE ? 1 : -1), lastMove.getEndPosition().getColumn()))){
             getBoard().removePiece(lastMove.getEndPosition());
         }
 
@@ -158,8 +176,12 @@ public class ChessGame {
         lastMove = move;
 
         // pass turn after making a move
-        if(getTeamTurn() == TeamColor.BLACK) setTeamTurn(TeamColor.WHITE);
-        else if(getTeamTurn() == TeamColor.WHITE) setTeamTurn(TeamColor.BLACK);
+        if(getTeamTurn() == TeamColor.BLACK){
+            setTeamTurn(TeamColor.WHITE);
+        }
+        else if(getTeamTurn() == TeamColor.WHITE){
+            setTeamTurn(TeamColor.BLACK);
+        }
     }
 
     /**
@@ -190,7 +212,9 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if(!isInCheck(teamColor)) return false; // Must be in check first
+        if(!isInCheck(teamColor)){
+            return false; // Must be in check first
+        }
         Collection<ChessMove> moves = getAllMoves(teamColor, getBoard()); // if in check, then make sure there are no safe moves
         for(ChessMove move : moves){
             if(safeMove(move)){
@@ -221,11 +245,15 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        if(isInCheck(teamColor)) return false; // not in stalemate if in Check
+        if(isInCheck(teamColor)){
+            return false; // not in stalemate if in Check
+        }
         Collection<ChessMove> allMoves = getAllMoves(teamColor, getBoard());
 
         for(ChessMove move:allMoves){ // if any safe move then not in stalemate
-            if(safeMove(move)) return false;
+            if(safeMove(move)){
+                return false;
+            }
         }
         return true;
     }
