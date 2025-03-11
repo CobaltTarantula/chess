@@ -53,6 +53,17 @@ public class DatabaseManager {
         String authSQL = "CREATE TABLE IF NOT EXISTS auths (";
         String gameSQL = "CREATE TABLE IF NOT EXISTS games (";
         String userSQL = "CREATE TABLE IF NOT EXISTS users (";
+
+        try (Connection connection = getConnection();
+             var authStatement = connection.prepareStatement(authSQL);
+             var gameStatement = connection.prepareStatement(gameSQL);
+             var userStatement = connection.prepareStatement(userSQL)) {
+            userStatement.executeUpdate();
+            authStatement.executeUpdate();
+            gameStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     /**
