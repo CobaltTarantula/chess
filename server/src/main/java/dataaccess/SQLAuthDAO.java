@@ -45,16 +45,24 @@ public class SQLAuthDAO implements AuthDAO{
 
     @Override
     public String getUsername(String authToken) throws DataAccessException {
-        String query = "";
+        String query = "SELECT username FROM auths WHERE authToken = ?";
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
                 // body code
+                statement.setString(1, authToken);
+                try(var find_auth = statement.executeQuery()){
+                    if (find_auth.next()) {
+                        return find_auth.getString("username");
+                    }
+                    else {
+                        return null;
+                    }
+                }
             }
         }
         catch (SQLException e){
             throw new DataAccessException(e.getMessage());
         }
-        return "";
     }
 
     @Override
