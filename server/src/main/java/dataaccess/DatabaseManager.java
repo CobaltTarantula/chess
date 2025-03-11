@@ -50,9 +50,9 @@ public class DatabaseManager {
 
     public static void createTables() throws DataAccessException {
         createDatabase();
-        String authSQL = "";
-        String gameSQL = "";
-        String userSQL = "";
+        String authSQL = "CREATE TABLE IF NOT EXISTS auths (";
+        String gameSQL = "CREATE TABLE IF NOT EXISTS games (";
+        String userSQL = "CREATE TABLE IF NOT EXISTS users (";
     }
 
     /**
