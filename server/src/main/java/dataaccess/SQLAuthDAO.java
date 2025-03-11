@@ -23,31 +23,85 @@ public class SQLAuthDAO implements AuthDAO{
 
     @Override
     public String getAuth(String authToken) throws DataAccessException {
+        String query = "";
+        try(Connection conn = DatabaseManager.getConnection()){
+            try(var statement = conn.prepareStatement(query)){
+                // body code
+            }
+        }
+        catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
         return "";
     }
 
     @Override
     public String getUsername(String authToken) throws DataAccessException {
+        String query = "";
+        try(Connection conn = DatabaseManager.getConnection()){
+            try(var statement = conn.prepareStatement(query)){
+                // body code
+            }
+        }
+        catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
         return "";
     }
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
+        String query = "";
+        try(Connection conn = DatabaseManager.getConnection()){
+            try(var statement = conn.prepareStatement(query)){
+                // body code
+            }
+        }
+        catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
 
     }
 
     @Override
     public void removeAllAuthTokens() throws DataAccessException {
+        String query = "";
+        try(Connection conn = DatabaseManager.getConnection()){
+            try(var statement = conn.prepareStatement(query)){
+                // body code
+            }
+        }
+        catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
 
     }
 
     @Override
     public boolean isEmpty() throws DataAccessException {
+        String query = "";
+        try(Connection conn = DatabaseManager.getConnection()){
+            try(var statement = conn.prepareStatement(query)){
+                // body code
+            }
+        }
+        catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
         return false;
     }
 
     @Override
     public boolean verifyAuth(String authToken) throws DataAccessException {
+        String query = "";
+        try(Connection conn = DatabaseManager.getConnection()){
+            try(var statement = conn.prepareStatement(query)){
+                // body code
+            }
+        }
+        catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
         return false;
     }
 }
