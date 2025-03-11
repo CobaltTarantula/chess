@@ -27,6 +27,13 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
+        // initialize database
+        try {
+            DatabaseManager.createTables();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::registerHandler);
         Spark.delete("/db", this::clearHandler);

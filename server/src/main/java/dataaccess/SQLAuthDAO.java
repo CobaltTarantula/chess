@@ -1,8 +1,12 @@
 package dataaccess;
 
+import java.sql.*;
+import java.util.UUID;
+
 public class SQLAuthDAO implements AuthDAO{
     @Override
     public String createAuth(String username) throws DataAccessException {
+        // string sql request
         return "";
     }
 
