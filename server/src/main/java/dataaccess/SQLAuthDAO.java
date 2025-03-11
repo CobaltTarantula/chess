@@ -7,7 +7,18 @@ public class SQLAuthDAO implements AuthDAO{
     @Override
     public String createAuth(String username) throws DataAccessException {
         // string sql request
-        return "";
+        String query = "INSERT INTO auths (authToken, username) VALUES (?, ?)";
+        try(Connection conn = DatabaseManager.getConnection()){
+            try(var statement = conn.prepareStatement(query)){
+                String authToken = UUID.randomUUID().toString();
+                statement.setString(1, authToken);
+                statement.setString(2, username);
+                return authToken;
+            }
+        }
+        catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
