@@ -50,9 +50,22 @@ public class DatabaseManager {
 
     public static void createTables() throws DataAccessException {
         createDatabase();
-        String authSQL = "CREATE TABLE IF NOT EXISTS auths (";
-        String gameSQL = "CREATE TABLE IF NOT EXISTS games (";
-        String userSQL = "CREATE TABLE IF NOT EXISTS users (";
+        String authSQL = "CREATE TABLE IF NOT EXISTS auths (" +
+                "authToken VARCHAR(255) NOT NULL PRIMARY KEY, " +
+                "username VARCHAR(255) NOT NULL" +
+                ")";
+        String gameSQL = "CREATE TABLE IF NOT EXISTS games (" +
+                "gameId INTEGER NOT NULL PRIMARY KEY, " +
+                "gameName VARCHAR(255) NOT NULL, " +
+                "whiteUsername VARCHAR(255) NOT NULL, " +
+                "blackUsername VARCHAR (255) NOT NULL, " +
+                "chessGame TEXT" +
+                ")";
+        String userSQL = "CREATE TABLE IF NOT EXISTS users (" +
+                "username VARCHAR(255) NOT NULL PRIMARY KEY, " +
+                "password VARCHAR (255) NOT NULL, " +
+                "email VARCHAR (255) NOT NULL" +
+                ")";
 
         try (Connection connection = getConnection();
              var authStatement = connection.prepareStatement(authSQL);
