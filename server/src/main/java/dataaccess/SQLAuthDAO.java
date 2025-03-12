@@ -95,16 +95,17 @@ public class SQLAuthDAO implements AuthDAO{
 
     @Override
     public boolean isEmpty() throws DataAccessException {
-        String query = "";
+        String query = "SELECT 1 FROM auths LIMIT 1";
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
-                // body code
+                try(var verify_empty = statement.executeQuery()){
+                    return !verify_empty.next();
+                }
             }
         }
         catch (SQLException e){
             throw new DataAccessException(e.getMessage());
         }
-        return false;
     }
 
     @Override
