@@ -110,10 +110,14 @@ public class SQLAuthDAO implements AuthDAO{
 
     @Override
     public boolean verifyAuth(String authToken) throws DataAccessException {
-        String query = "";
+        String query = "SELECT 1 FROM auths WHERE authToken = ? LIMIT 1";
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
-                // body code
+                try(var auth_list = statement.executeQuery()){
+                    if(auth_list.next()){
+                        return true;
+                    }
+                }
             }
         }
         catch (SQLException e){
