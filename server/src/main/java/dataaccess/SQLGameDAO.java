@@ -4,10 +4,26 @@ import model.GameData;
 
 import java.util.Collection;
 import java.util.List;
+import java.sql.*;
+import java.util.UUID;
 
 public class SQLGameDAO implements GameDAO{
     @Override
     public Integer createGame(String gameName, Integer gameID) throws DataAccessException {
+        String query = "INSERT INTO GAMES (gameID, gameName, whiteUsername, blackUsername, chessGame)";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement(query)) {
+                //body
+                statement.setInt(1, gameID);
+                statement.setString(2, gameName);
+                statement.setString(3, null);
+                statement.setString(4, null);
+                // chessGame
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return 0;
     }
 

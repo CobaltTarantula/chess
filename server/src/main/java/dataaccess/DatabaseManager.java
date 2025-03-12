@@ -55,7 +55,7 @@ public class DatabaseManager {
                 "username VARCHAR(255) NOT NULL" +
                 ")";
         String gameSQL = "CREATE TABLE IF NOT EXISTS games (" +
-                "gameId INTEGER NOT NULL PRIMARY KEY, " +
+                "gameID INTEGER NOT NULL PRIMARY KEY, " +
                 "gameName VARCHAR(255) NOT NULL, " +
                 "whiteUsername VARCHAR(255) NOT NULL, " +
                 "blackUsername VARCHAR (255) NOT NULL, " +
