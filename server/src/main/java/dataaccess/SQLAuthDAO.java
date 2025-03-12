@@ -78,21 +78,19 @@ public class SQLAuthDAO implements AuthDAO{
         catch (SQLException e){
             throw new DataAccessException(e.getMessage());
         }
-
     }
 
     @Override
     public void removeAllAuthTokens() throws DataAccessException {
-        String query = "";
+        String query = "DELETE FROM auths";
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
-                // body code
+                statement.executeUpdate();
             }
         }
         catch (SQLException e){
             throw new DataAccessException(e.getMessage());
         }
-
     }
 
     @Override
