@@ -34,26 +34,71 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public GameData getGame(Integer gameID) throws DataAccessException {
+        String query = "";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement(query)) {
+                //body
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 
     @Override
     public Collection<GameData> listGames() throws DataAccessException {
+        String query = "";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement(query)) {
+                //body
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return List.of();
     }
 
     @Override
     public GameData saveGame(int gameID, GameData game) throws DataAccessException {
+        String query = "";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement(query)) {
+                //body
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 
     @Override
     public void removeAllGames() throws DataAccessException {
+        String query = "";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement(query)) {
+                //body
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
     @Override
     public boolean isEmpty() throws DataAccessException {
+        String query = "";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement(query)) {
+                //body
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return false;
     }
 }
