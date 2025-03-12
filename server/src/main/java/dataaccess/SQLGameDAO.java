@@ -1,5 +1,7 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 
 import java.util.Collection;
@@ -19,12 +21,15 @@ public class SQLGameDAO implements GameDAO{
                 statement.setString(3, null);
                 statement.setString(4, null);
                 // chessGame
+                String gameJson = new Gson().toJson(new ChessGame());
+                statement.setString(5, gameJson);
+                statement.executeUpdate();
             }
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return 0;
+        return gameID;
     }
 
     @Override
