@@ -92,7 +92,7 @@ public class DataAccessTests {
 
             @Test
             public void testCreateGameSuccess() throws DataAccessException, SQLException {
-                gameDAO.createGame("testGame", 1, null, null);
+                gameDAO.createGame("testGame", 1);
 
                 try (Connection conn = DatabaseManager.getConnection()) {
                     try (var preparedStatement = conn.prepareStatement("SELECT * FROM games WHERE gameName = ?")) {
@@ -107,9 +107,9 @@ public class DataAccessTests {
 
             @Test
             public void testCreateGameFailure() throws DataAccessException {
-                gameDAO.createGame("testGame", 1, null, null);
+                gameDAO.createGame("testGame", 1);
 
-                assertThrows(DataAccessException.class, () -> gameDAO.createGame("testGame", 1, null, null));
+                assertThrows(DataAccessException.class, () -> gameDAO.createGame("testGame", 1));
             }
         }
 
@@ -119,7 +119,7 @@ public class DataAccessTests {
             @Test
             public void testGetGameSuccess() throws DataAccessException {
                 GameData newGame = new GameData(1, null, null, "testGame", new ChessGame());
-                gameDAO.createGame(newGame.gameName(), newGame.gameID(), null, null);
+                gameDAO.createGame(newGame.gameName(), newGame.gameID());
 
                 GameData savedGame = gameDAO.getGame(newGame.gameID());
                 assertEquals(newGame.gameName(), savedGame.gameName(), "GetGame failure");
@@ -141,9 +141,9 @@ public class DataAccessTests {
                 GameData game2 = new GameData(2, null, null, "testGame2", new ChessGame());
                 GameData game3 = new GameData(3, null, null, "testGame3", new ChessGame());
 
-                gameDAO.createGame(game1.gameName(), game1.gameID(), null, null);
-                gameDAO.createGame(game2.gameName(), game2.gameID(), null, null);
-                gameDAO.createGame(game3.gameName(), game3.gameID(), null, null);
+                gameDAO.createGame(game1.gameName(), game1.gameID());
+                gameDAO.createGame(game2.gameName(), game2.gameID());
+                gameDAO.createGame(game3.gameName(), game3.gameID());
 
                 Collection<GameData> expectedGames = new ArrayList<>();
                 expectedGames.add(game1);
@@ -169,7 +169,7 @@ public class DataAccessTests {
             @Test
             public void testSaveGameSuccess() throws DataAccessException {
                 GameData game = new GameData(1, null, null, "testGame", new ChessGame());
-                gameDAO.createGame(game.gameName(), game.gameID(), null, null);
+                gameDAO.createGame(game.gameName(), game.gameID());
 
                 GameData newGame = new GameData(1, "testWhite", "testBlack", "testGame", new ChessGame());
 
@@ -250,7 +250,7 @@ public class DataAccessTests {
     @Test
     public void testClear() throws DataAccessException {
         userDAO.createUser(new UserData("testUser", "testPassword", "testEmail"));
-        gameDAO.createGame("testGame", 1, null, null);
+        gameDAO.createGame("testGame", 1);
         authDAO.createAuth("testUser");
 
         userDAO.removeAllUsers();
