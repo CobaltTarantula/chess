@@ -17,7 +17,7 @@ public class ServiceTests {
         AuthDAO auths = new MemAuthDAO();
 
         users.createUser(new UserData("testUser", "testPassword", "testEmail"));
-        games.createGame("testGame", 1, null, null);
+        games.createGame("testGame", 1);
         auths.createAuth("testUsername");
 
         ClearService testClearService = new ClearService(users, games, auths);
