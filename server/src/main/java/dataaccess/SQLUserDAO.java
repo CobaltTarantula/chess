@@ -50,10 +50,10 @@ public class SQLUserDAO implements UserDAO{
 
     @Override
     public void removeAllUsers() throws DataAccessException {
-        String query = "";
+        String query = "DELETE FROM users";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement(query)) {
-                //body
+                statement.executeUpdate();
             }
         }
         catch (SQLException e) {
@@ -63,15 +63,16 @@ public class SQLUserDAO implements UserDAO{
 
     @Override
     public boolean isEmpty() throws DataAccessException {
-        String query = "";
+        String query = "SELECT 1 FROM users LIMIT 1";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement(query)) {
-                //body
+                try (var results = statement.executeQuery()) {
+                    return !results.next();
+                }
             }
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return false;
     }
 }
