@@ -8,10 +8,14 @@ import java.sql.SQLException;
 public class SQLUserDAO implements UserDAO{
     @Override
     public void createUser(UserData user) throws DataAccessException {
-        String query = "";
+        String query = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement(query)) {
-                //body
+                statement.setString(1, user.username());
+                statement.setString(2, user.password());
+                statement.setString(3, user.email());
+
+                statement.executeUpdate();
             }
         }
         catch (SQLException e) {
