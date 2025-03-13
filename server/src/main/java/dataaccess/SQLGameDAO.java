@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.sql.*;
-import java.util.UUID;
 
 public class SQLGameDAO implements GameDAO{
     @Override
