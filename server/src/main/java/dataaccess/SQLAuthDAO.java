@@ -13,6 +13,8 @@ public class SQLAuthDAO implements AuthDAO{
                 String authToken = UUID.randomUUID().toString();
                 statement.setString(1, authToken);
                 statement.setString(2, username);
+
+                statement.executeUpdate();
                 return authToken;
             }
         }
@@ -50,12 +52,9 @@ public class SQLAuthDAO implements AuthDAO{
             try(var statement = conn.prepareStatement(query)){
                 // body code
                 statement.setString(1, authToken);
-                try(var find_auth = statement.executeQuery()){
-                    if (find_auth.next()) {
-                        return find_auth.getString("username");
-                    }
-                    else {
-                        return null;
+                try(var results = statement.executeQuery()){
+                    if (results.next()) {
+                        return results.getString("username");
                     }
                 }
             }
@@ -63,6 +62,7 @@ public class SQLAuthDAO implements AuthDAO{
         catch (SQLException e){
             throw new DataAccessException(e.getMessage());
         }
+        return null;
     }
 
     @Override

@@ -18,7 +18,7 @@ public class UserService {
             throw new DataAccessException("bad request");
         }
 
-        if (userDAO.getUser(user.username()) != null) {
+        if (userDAO.getUser(user.username(), user.password()) != null) {
             throw new DataAccessException("already taken");
         }
 
@@ -34,11 +34,11 @@ public class UserService {
             throw new DataAccessException("must fill all fields");
         }
 
-        if (userDAO.getUser(user.username()) == null) {
+        if (userDAO.getUser(user.username(), user.password()) == null) {
             throw new DataAccessException("unauthorized");
         }
 
-        UserData savedUser = userDAO.getUser(user.username());
+        UserData savedUser = userDAO.getUser(user.username(), user.password());
         if (!verifyPassword(user.password(), savedUser.password())) {
             throw new DataAccessException("unauthorized");
         }

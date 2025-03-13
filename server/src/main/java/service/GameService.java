@@ -32,7 +32,7 @@ public class GameService {
         }
 
         // create and store game, return gameID
-        return gameDAO.createGame(gameName, gameID);
+        return gameDAO.createGame(gameName, gameID, null, null);
     }
 
     public Collection<GameData> listGames(String authToken) throws DataAccessException {

@@ -19,16 +19,17 @@ public class SQLUserDAO implements UserDAO{
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 
     @Override
-    public UserData getUser(String username) throws DataAccessException {
+    public UserData getUser(String username, String password) throws DataAccessException {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement(query)) {
                 statement.setString(1, username);
+                statement.setString(2, password);
                 try (var results = statement.executeQuery()) {
                     if(results.next()) {
                         return new UserData(

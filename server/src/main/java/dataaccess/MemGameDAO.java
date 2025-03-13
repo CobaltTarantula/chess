@@ -13,7 +13,7 @@ public class MemGameDAO implements GameDAO{
         games = new HashMap<>();
     }
 
-    public Integer createGame(String gameName, Integer gameID) {
+    public Integer createGame(String gameName, Integer gameID, String whiteUsername, String blackUsername) {
         // make new game
         GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
         // put game in games

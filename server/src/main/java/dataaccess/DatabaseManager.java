@@ -55,16 +55,16 @@ public class DatabaseManager {
                 "username VARCHAR(255) NOT NULL" +
                 ")";
         String gameSQL = "CREATE TABLE IF NOT EXISTS games (" +
-                "gameID INTEGER NOT NULL PRIMARY KEY, " +
+                "gameID INTEGER AUTO_INCREMENT PRIMARY KEY, " +
                 "gameName VARCHAR(255) NOT NULL, " +
-                "whiteUsername VARCHAR(255) NOT NULL, " +
-                "blackUsername VARCHAR (255) NOT NULL, " +
+                "whiteUsername VARCHAR(255) DEFAULT NULL, " +
+                "blackUsername VARCHAR (255) DEFAULT NULL, " +
                 "chessGame TEXT" +
                 ")";
         String userSQL = "CREATE TABLE IF NOT EXISTS users (" +
                 "username VARCHAR(255) NOT NULL PRIMARY KEY, " +
                 "password VARCHAR (255) NOT NULL, " +
-                "email VARCHAR (255) NOT NULL" +
+                "email VARCHAR (255) NOT NULL UNIQUE" +
                 ")";
 
         try (Connection connection = getConnection();

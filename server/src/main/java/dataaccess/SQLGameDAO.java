@@ -11,23 +11,25 @@ import java.sql.*;
 
 public class SQLGameDAO implements GameDAO{
     @Override
-    public Integer createGame(String gameName, Integer gameID) throws DataAccessException {
-        String query = "INSERT INTO GAMES (gameID, gameName, whiteUsername, blackUsername, chessGame)";
+    public Integer createGame(String gameName, Integer gameID, String whiteUsername, String blackUsername) throws DataAccessException {
+        if (whiteUsername == null) whiteUsername = "noPlayer";
+        if (blackUsername == null) blackUsername = "noPlayer";
+        String query = "INSERT INTO games (gameID, gameName, whiteUsername, blackUsername, chessGame) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement(query)) {
                 //body
                 statement.setInt(1, gameID);
                 statement.setString(2, gameName);
-                statement.setString(3, null);
-                statement.setString(4, null);
+                statement.setString(3, whiteUsername);  // whiteUsername
+                statement.setString(4, blackUsername);  // blackUsername
                 // chessGame
-                String gameJson = new Gson().toJson(new ChessGame());
+                var gameJson = new Gson().toJson(new ChessGame());
                 statement.setString(5, gameJson);
                 statement.executeUpdate();
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
         return gameID;
     }
@@ -55,7 +57,7 @@ public class SQLGameDAO implements GameDAO{
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 
@@ -79,14 +81,14 @@ public class SQLGameDAO implements GameDAO{
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
         return games;
     }
 
     @Override
     public GameData saveGame(int gameID, GameData game) throws DataAccessException {
-        String query = "UPDATE games SET whiteUsername = ?, blackUsername = ?, gameName = ?, game = ? WHERE gameID = ?";
+        String query = "UPDATE games SET whiteUsername = ?, blackUsername = ?, gameName = ?, chessGame = ? WHERE gameID = ?";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement(query)) {
                 statement.setString(1, game.whiteUsername());
@@ -100,7 +102,7 @@ public class SQLGameDAO implements GameDAO{
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
         return null;
     }
@@ -114,7 +116,7 @@ public class SQLGameDAO implements GameDAO{
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
 
     }
@@ -130,7 +132,7 @@ public class SQLGameDAO implements GameDAO{
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 }
