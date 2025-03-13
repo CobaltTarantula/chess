@@ -122,15 +122,16 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public boolean isEmpty() throws DataAccessException {
-        String query = "";
+        String query = "SELECT 1 FROM games LIMIT 1";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement(query)) {
-                //body
+                try (var results = statement.executeQuery()) {
+                    return !results.next();
+                }
             }
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return false;
     }
 }
