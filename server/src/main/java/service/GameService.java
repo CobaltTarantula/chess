@@ -47,8 +47,8 @@ public class GameService {
         String userName = authDAO.getUsername(authToken);
 
         // verify game
+        if (gameID == null){ throw new DataAccessException("bad request");}
         GameData game = gameDAO.getGame(gameID);
-        if (game == null){ throw new DataAccessException("bad request");}
 
         // new player
         GameData updatedGame = updateGame(game, userName, playerColor);
