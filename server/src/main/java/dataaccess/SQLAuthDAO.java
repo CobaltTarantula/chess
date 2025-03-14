@@ -113,6 +113,7 @@ public class SQLAuthDAO implements AuthDAO{
         String query = "SELECT 1 FROM auths WHERE authToken = ? LIMIT 1";
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
+                statement.setString(1, authToken); // Set the authToken parameter
                 try(var auth_list = statement.executeQuery()){
                     if(auth_list.next()){
                         return true;

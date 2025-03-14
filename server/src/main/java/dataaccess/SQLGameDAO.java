@@ -18,15 +18,17 @@ public class SQLGameDAO implements GameDAO{
                 //body
                 statement.setInt(1, gameID);
                 statement.setString(2, gameName);
-                statement.setString(3, "whiteUsername");  // whiteUsername
-                statement.setString(4, "blackUsername");  // blackUsername
+                statement.setString(3, null);  // whiteUsername
+                statement.setString(4, null);  // blackUsername
                 // chessGame
                 var gameJson = new Gson().toJson(new ChessGame());
                 statement.setString(5, gameJson);
+
                 statement.executeUpdate();
             }
         }
         catch (SQLException e) {
+            System.out.println("Error during game insertion: " + e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
         return gameID;

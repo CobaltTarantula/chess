@@ -43,7 +43,6 @@ public class UserService {
             throw new DataAccessException("unauthorized");
         }
 
-        userDAO.createUser(user);
         String username = user.username();
         String token = authDAO.createAuth(username);
 
