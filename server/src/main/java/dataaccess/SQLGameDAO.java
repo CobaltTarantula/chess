@@ -42,13 +42,13 @@ public class SQLGameDAO implements GameDAO{
                 statement.setInt(1, gameID);
                 try (var results = statement.executeQuery()){
                     if (results.next()){
-                        int found_ID = results.getInt("gameID");
+                        int foundID = results.getInt("gameID");
                         String gameName = results.getString("gameName");
                         String whiteUsername = results.getString("whiteUsername");
                         String blackUsername = results.getString("blackUsername");
                         String gameJson = results.getString("chessGame");
                         ChessGame chessGame = new Gson().fromJson(gameJson, ChessGame.class);
-                        return new GameData(found_ID, whiteUsername, blackUsername, gameName, chessGame);
+                        return new GameData(foundID, whiteUsername, blackUsername, gameName, chessGame);
                     }
                     else {
                         return null;
@@ -69,13 +69,13 @@ public class SQLGameDAO implements GameDAO{
             try (var statement = conn.prepareStatement(query)) {
                 try (var results = statement.executeQuery()){
                     while (results.next()){
-                        int found_ID = results.getInt("gameID");
+                        int foundID = results.getInt("gameID");
                         String gameName = results.getString("gameName");
                         String whiteUsername = results.getString("whiteUsername");
                         String blackUsername = results.getString("blackUsername");
                         String gameJson = results.getString("chessGame");
                         ChessGame chessGame = new Gson().fromJson(gameJson, ChessGame.class);
-                        games.add(new GameData(found_ID, whiteUsername, blackUsername, gameName, chessGame));
+                        games.add(new GameData(foundID, whiteUsername, blackUsername, gameName, chessGame));
                     }
                 }
             }

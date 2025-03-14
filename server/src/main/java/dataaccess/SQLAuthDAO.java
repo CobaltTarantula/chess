@@ -30,9 +30,9 @@ public class SQLAuthDAO implements AuthDAO{
             try(var statement = conn.prepareStatement(query)){
                 // body
                 statement.setString(1, authToken);
-                try(var find_Auth = statement.executeQuery()){
-                    if (find_Auth.next()) {
-                        return find_Auth.getString("authToken");
+                try(var findAuth = statement.executeQuery()){
+                    if (findAuth.next()) {
+                        return findAuth.getString("authToken");
                     }
                     else {
                         return null;
@@ -98,8 +98,8 @@ public class SQLAuthDAO implements AuthDAO{
         String query = "SELECT 1 FROM auths LIMIT 1";
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
-                try(var verify_Empty = statement.executeQuery()){
-                    return !verify_Empty.next();
+                try(var verifyEmpty = statement.executeQuery()){
+                    return !verifyEmpty.next();
                 }
             }
         }
@@ -114,8 +114,8 @@ public class SQLAuthDAO implements AuthDAO{
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
                 statement.setString(1, authToken); // Set the authToken parameter
-                try(var auth_List = statement.executeQuery()){
-                    if(auth_List.next()){
+                try(var authList = statement.executeQuery()){
+                    if(authList.next()){
                         return true;
                     }
                 }
