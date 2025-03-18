@@ -142,3 +142,59 @@ try(Connection c = DriverManager.getConnection(connectionURL)){
 ### Assembly
 * JDBC in code that creates the database
 ## REMEMBER TO CALL THE THING THAT MAKES THE DATABASE **IN** THE CODE
+## Client HTTP and Logging
+### Get
+* don't need accept headers or determining content type because the server will only serve json strings
+* only check authtokens
+### Post
+* nearly identical to Get, but ```connection.setDoOutput(true);```
+* try with resources block -> write request body to OutputStream
+### GET request/response Steps
+1. Client: Create URL instance
+2. Client: Open connection (url.openConnection()), set read timeout, set request method to GET, connect
+3. Server: Mapped HTTP handler function is called with request and response objects
+4. Server: Proccess request and return response
+5. Client: Get Response code, get input stream
+6. Client: Read and process input
+### POST request/response Steps
+1. Client: Create URL instance
+2. Client: Open connection (url.openConnection()), set read timeout, set request method to Post, setDoOutput(true), connect
+3. Client: Get output stream (connection.getOutputStream())
+4. Client: Write request body to output stream
+5. Server: Mapped HTTP handler function is called with request and response objects
+6. Server: Process request and return response (including reading request body JSON and converting to request object)
+7. Client: Get Response code, get input stream
+8. Client: Read and process response
+### Dependencies
+* UI Client depends on UI ChessBoard and Server Facade
+* Server Facade depends on Client communicator
+* Client communicator depends on Internet (HTTP)
+## Logging
+* better way to print errors besides system out printlines
+* Java has built-in support for logging
+* Logs contain messages that provide information to
+ * Software developers (debugging)
+ * Sys admins
+ * Customer support agents
+* Programs send log messages to "loggers"
+ * There can be one or more
+* Each message has a "level"
+ * SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST
+* never remove debugging logs
+### Loggers
+* loggers have a method for each message level
+ * severe, warning, info, config, fine, finer, finest
+* configure to include or omit messages based on level
+ * ```Logger.setLevel(level)method``` - ALL, OFF, or lowest level
+### Handlers
+* each logger has one or more "handlers" associated
+* **ConsoleHandler**: sends messages to console
+* **FileHandler**: sends messages to file
+* **SocketHandler**: sends messages to network socket
+* can be configured like loggers
+### Formatters
+* Each handler has a **formatter** which defines format used to encode messages
+* **SimpleFormatter**
+* **XMLFormatter**
+### Logger Configuration
+* configuration class with logger instance inside
