@@ -1,7 +1,5 @@
 package client;
 
-import chess.ChessMove;
-import chess.ChessPosition;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -16,13 +14,11 @@ import java.util.Collection;
 import java.util.Map;
 
 public class ServerFacade {
-    private int port;
-    private String baseUrl;
+    private final String baseUrl;
     private String authToken;
 
     public ServerFacade(int givenPort) {
-        port = givenPort;
-        baseUrl = "http://localhost:" + port;
+        baseUrl = "http://localhost:" + givenPort;
         authToken = null;
     }
 
@@ -50,27 +46,57 @@ public class ServerFacade {
         }
     }
 
-    public AuthData register(){
-        return null;
+    public AuthData register(String username, String password, String email) throws IOException {
+        URL url = new URL(baseUrl + "/user");
+        JsonObject reqJson = new JsonObject();
+        reqJson.addProperty("username", username);
+        reqJson.addProperty("password", password);
+        reqJson.addProperty("email", email);
+        Map<String, String> res = sendRequest("POST", url, reqJson, new TypeToken<Map<String, String>>() {}.getType());
+        return new AuthData(res.get("authToken"), res.get("username"));
     }
 
-    public AuthData login(){
-        return null;
+    public AuthData login(String username, String password) throws IOException{
+        URL url = new URL(baseUrl + "/session");
+        JsonObject reqJson = new JsonObject();
+        reqJson.addProperty("username", username);
+        reqJson.addProperty("password", password);
+        Map<String, String> res = sendRequest("POST", url, reqJson, new TypeToken<Map<String, String>>() {}.getType());
+        return new AuthData(res.get("authToken"), res.get("username"));
     }
 
-    public int logout(){
-        return 0;
+    public int logout(String authToken) throws IOException {
+        this.authToken = authToken;
+        URL url = new URL(baseUrl + "/session");
+        JsonObject reqJson = new JsonObject();
+        reqJson.addProperty("authToken", authToken);
+        return sendRequest("DELETE", url, reqJson, Integer.class);
     }
 
-    public Integer createGame(){
-        return null;
+    public Integer createGame(String authToken, String gameName) throws IOException {
+        this.authToken = authToken;
+        URL url = new URL(baseUrl + "/game");
+        JsonObject reqJson = new JsonObject();
+        reqJson.addProperty("authToken", authToken);
+        reqJson.addProperty("gameName", gameName);
+        Map<String, String> res = sendRequest("POST", url, reqJson, new TypeToken<Map<String, String>>() {}.getType());
+        return Integer.valueOf(res.get("gameID"));
     }
 
-    public int joinGame(){
-        return 0;
+    public int joinGame(String authToken, String playerColor, int gameId) throws IOException {
+        this.authToken = authToken;
+        URL url = new URL(baseUrl + "/game");
+        JsonObject reqJson = new JsonObject();
+        reqJson.addProperty("authToken", authToken);
+        reqJson.addProperty("playerColor", playerColor);
+        reqJson.addProperty("gameID", gameId);
+        return sendRequest("PUT", url, reqJson, Integer.class);
     }
 
-    public Collection<GameData> listGames(){
-        return null;
+    public Collection<GameData> listGames(String authToken) throws IOException {
+        this.authToken = authToken;
+        URL url = new URL(baseUrl + "/game");
+        Map<String, String> res = sendRequest("GET", url, null, new TypeToken<Map<String, String>>() {}.getType());
+        return new Gson().fromJson(new Gson().toJson(res.get("games")), new TypeToken<Collection<GameData>>() {}.getType());
     }
 }
