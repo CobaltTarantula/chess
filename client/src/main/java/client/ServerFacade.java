@@ -9,6 +9,8 @@ import model.GameData;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
@@ -46,8 +48,18 @@ public class ServerFacade {
         }
     }
 
+    public URL validateUrl(String suffix) throws IOException{
+        URL url;
+        try {
+            url = new URI(baseUrl + suffix).toURL();
+        } catch (URISyntaxException e) {
+            throw new IOException("Invalid URL syntax: " + e.getMessage(), e);
+        }
+        return url;
+    }
+
     public AuthData register(String username, String password, String email) throws IOException {
-        URL url = new URL(baseUrl + "/user");
+        URL url = validateUrl("/user");
         JsonObject reqJson = new JsonObject();
         reqJson.addProperty("username", username);
         reqJson.addProperty("password", password);
@@ -57,7 +69,7 @@ public class ServerFacade {
     }
 
     public AuthData login(String username, String password) throws IOException{
-        URL url = new URL(baseUrl + "/session");
+        URL url = validateUrl("/session");
         JsonObject reqJson = new JsonObject();
         reqJson.addProperty("username", username);
         reqJson.addProperty("password", password);
@@ -67,7 +79,7 @@ public class ServerFacade {
 
     public int logout(String authToken) throws IOException {
         this.authToken = authToken;
-        URL url = new URL(baseUrl + "/session");
+        URL url = validateUrl("/session");
         JsonObject reqJson = new JsonObject();
         reqJson.addProperty("authToken", authToken);
         return sendRequest("DELETE", url, reqJson, Integer.class);
@@ -75,7 +87,7 @@ public class ServerFacade {
 
     public Integer createGame(String authToken, String gameName) throws IOException {
         this.authToken = authToken;
-        URL url = new URL(baseUrl + "/game");
+        URL url = validateUrl("/game");
         JsonObject reqJson = new JsonObject();
         reqJson.addProperty("authToken", authToken);
         reqJson.addProperty("gameName", gameName);
@@ -85,7 +97,7 @@ public class ServerFacade {
 
     public int joinGame(String authToken, String playerColor, int gameId) throws IOException {
         this.authToken = authToken;
-        URL url = new URL(baseUrl + "/game");
+        URL url = validateUrl("/game");
         JsonObject reqJson = new JsonObject();
         reqJson.addProperty("authToken", authToken);
         reqJson.addProperty("playerColor", playerColor);
@@ -95,7 +107,7 @@ public class ServerFacade {
 
     public Collection<GameData> listGames(String authToken) throws IOException {
         this.authToken = authToken;
-        URL url = new URL(baseUrl + "/game");
+        URL url = validateUrl("/game");
         Map<String, String> res = sendRequest("GET", url, null, new TypeToken<Map<String, String>>() {}.getType());
         return new Gson().fromJson(new Gson().toJson(res.get("games")), new TypeToken<Collection<GameData>>() {}.getType());
     }
