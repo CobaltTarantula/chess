@@ -77,32 +77,32 @@ public class ServerFacade {
         return new AuthData(res.get("authToken"), res.get("username"));
     }
 
-    public int logout(String authToken) throws IOException {
+    public void logout(String authToken) throws IOException {
         this.authToken = authToken;
         URL url = validateUrl("/session");
         JsonObject reqJson = new JsonObject();
         reqJson.addProperty("authToken", authToken);
-        return sendRequest("DELETE", url, reqJson, Integer.class);
+        sendRequest("DELETE", url, reqJson, Integer.class);
     }
 
-    public Integer createGame(String authToken, String gameName) throws IOException {
+    public void createGame(String authToken, String gameName) throws IOException {
         this.authToken = authToken;
         URL url = validateUrl("/game");
         JsonObject reqJson = new JsonObject();
         reqJson.addProperty("authToken", authToken);
         reqJson.addProperty("gameName", gameName);
         Map<String, String> res = sendRequest("POST", url, reqJson, new TypeToken<Map<String, String>>() {}.getType());
-        return Integer.valueOf(res.get("gameID"));
+        Integer.valueOf(res.get("gameID"));
     }
 
-    public int joinGame(String authToken, String playerColor, int gameId) throws IOException {
+    public void joinGame(String authToken, String playerColor, int gameId) throws IOException {
         this.authToken = authToken;
         URL url = validateUrl("/game");
         JsonObject reqJson = new JsonObject();
         reqJson.addProperty("authToken", authToken);
         reqJson.addProperty("playerColor", playerColor);
         reqJson.addProperty("gameID", gameId);
-        return sendRequest("PUT", url, reqJson, Integer.class);
+        sendRequest("PUT", url, reqJson, Integer.class);
     }
 
     public Collection<GameData> listGames(String authToken) throws IOException {
