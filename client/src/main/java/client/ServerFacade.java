@@ -8,10 +8,7 @@ import model.GameData;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.util.Collection;
 import java.util.Map;
 
@@ -31,14 +28,12 @@ public class ServerFacade {
         connection.setDoOutput(!method.equals("GET"));
         connection.addRequestProperty("Authorization", authToken);
 
-        // Write JSON body for applicable methods
         if (reqJson != null && !method.equals("GET")) {
             try (OutputStream outputStream = connection.getOutputStream()) {
                 outputStream.write(new Gson().toJson(reqJson).getBytes());
             }
         }
 
-        // Read response
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
             try (InputStream resBody = connection.getInputStream()) {
                 return new Gson().fromJson(new InputStreamReader(resBody), responseType);
@@ -110,5 +105,46 @@ public class ServerFacade {
         URL url = validateUrl("/game");
         Map<String, String> res = sendRequest("GET", url, null, new TypeToken<Map<String, String>>() {}.getType());
         return new Gson().fromJson(new Gson().toJson(res.get("games")), new TypeToken<Collection<GameData>>() {}.getType());
+    }
+
+    public void clear() throws IOException {
+        URL url = new URL(baseUrl + "/db");
+        JsonObject reqJson = new JsonObject();
+        doDelete(url, reqJson);
+    }
+
+    private void doDelete(URL url, JsonObject reqJson) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("DELETE");
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "application/json");
+
+        // Write JSON body (if needed)
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = reqJson.toString().getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        // Check response code
+        int responseCode = connection.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            throw new IOException("Failed to clear: HTTP " + responseCode);
+        }
+
+        // Close the connection
+        connection.disconnect();
+    }
+
+    public void makeInvalidRequest() throws IOException {
+        // Perform an HTTP request to a non-existent endpoint (e.g., "/invalid")
+        URL url = new URL(baseUrl + "/invalid");  // Invalid endpoint
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        // This should throw an exception or return a 404 status
+        int responseCode = connection.getResponseCode();
+        if (responseCode == 404) {
+            throw new IOException("404 Not Found: Invalid endpoint");
+        }
     }
 }
