@@ -120,13 +120,17 @@ public class ConsoleUI {
     }
 
     private void help(){
-        out.println("register  - to create an account");
-        out.println("login     - to play chess");
-        out.println("quit      - playing chess");
-        out.println("help      - with possible commands");
-        if(loggedIn){
-            out.println("logout  - when you are done");
-            out.println("create - to make a new game to join");
+        out.println("Available Commands:");
+        out.println("- register   : Create a new account");
+        out.println("- login      : Log into your account");
+        out.println("- quit       : Exit the program");
+        out.println("- help       : Display available commands");
+        if (loggedIn) {
+            out.println("- logout     : Log out of your account");
+            out.println("- create     : Create a new chess game");
+            out.println("- list       : Show available games");
+            out.println("- play       : Join a game as a player");
+            out.println("- observe    : Watch a game in progress");
         }
     }
 
@@ -163,6 +167,10 @@ public class ConsoleUI {
     }
 
     private void logout(){
+        if (!loggedIn) {
+            out.println("You are not logged in.");
+            return;
+        }
         try {
             facade.logout(auth.authToken());
             out.println("Successfully logged out.");
@@ -235,7 +243,7 @@ public class ConsoleUI {
                 }
 
             } catch (Exception e) {
-                out.println("Failed to join game");
+                out.println("Failed to join game" + e.getMessage());
             }
         }
     }
