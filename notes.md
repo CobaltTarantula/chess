@@ -144,8 +144,8 @@ try(Connection c = DriverManager.getConnection(connectionURL)){
 ## REMEMBER TO CALL THE THING THAT MAKES THE DATABASE **IN** THE CODE
 ## Client HTTP and Logging
 ### Get
-* don't need accept headers or determining content type because the server will only serve json strings
-* only check authtokens
+* don't need to accept headers or determining content type because the server will only serve json strings
+* only check authTokens
 ### Post
 * nearly identical to Get, but ```connection.setDoOutput(true);```
 * try with resources block -> write request body to OutputStream
@@ -153,7 +153,7 @@ try(Connection c = DriverManager.getConnection(connectionURL)){
 1. Client: Create URL instance
 2. Client: Open connection (url.openConnection()), set read timeout, set request method to GET, connect
 3. Server: Mapped HTTP handler function is called with request and response objects
-4. Server: Proccess request and return response
+4. Server: Process request and return response
 5. Client: Get Response code, get input stream
 6. Client: Read and process input
 ### POST request/response Steps
@@ -206,7 +206,7 @@ try(Connection c = DriverManager.getConnection(connectionURL)){
 * ```session.getRemote().sendString("WebSocket response: " + message);```
 * Have a map of all the sessions that I get with the keys = GameID
 ### WebSocket client
-* library gonna handle all the low-level stuff we don't wanna worry about
+* library will handle all the low-level stuff we don't want to worry about
 * Install **glassfish.tyrus.bundles.standalone.client 1.15**
 ```java
 public class WSClient extends Endpoint {
@@ -229,3 +229,27 @@ public class WSClient extends Endpoint {
 }
 ```
 ## Chess Phase 6
+Menu options:
+1. Redraw Board
+   * should have passed in board or matrix of pieces
+   * pass in additional matrix to show where to highlight
+2. Make Move
+   * End game with checkmate
+   * Shouldn't be possible after resignation or checkmate
+   * observers can't
+   * Promotion message with syntax for pawn promotion in back row
+   * notifications of moves, check, and checkmate (victory message)
+   * no highlights necessary
+3. Highlight Legal Moves
+   * Highlight currPos of piece and in another color highlight possible positions to move to
+4. Resign
+   * Concede -> don't leave game
+   * "You have successfully resigned from the game"
+   * Can still access board but can't play
+5. Help
+   * string of whatever help text desired
+6. Leave Game
+   * Don't necessarily resign
+   * Could allow others to join in your place
+   * If resigned, say "You resigned, can't leave resigned game"
+* all players should be notified when players or observers enter/leave game
