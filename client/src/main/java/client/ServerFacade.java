@@ -9,6 +9,7 @@ import model.GameData;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 
@@ -121,7 +122,7 @@ public class ServerFacade {
 
         // Write JSON body (if needed)
         try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = reqJson.toString().getBytes("utf-8");
+            byte[] input = reqJson.toString().getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
 
