@@ -256,4 +256,14 @@ Menu options:
 * WebSocketCommunicator shouldn't refer directly to ChessClient
   * create interface ServerMessageObserver that ChessClient implements (```notify``` method) with ```ServerMessage message``` as param
   * WebSocketCommunicator references ServerMessageObserver
-  * indirect reference to ChessClient
+  * indirect reference to ChessClient 
+## Chicken-and-Egg Problem with Json/Gson
+* Gson standard type adapter 
+* deserializer
+  * ```implements JsonDeserializer<Class>```
+  ``` java
+  public Class deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonException {
+    Stuff
+  }
+  ```
+* runtime type adapter
