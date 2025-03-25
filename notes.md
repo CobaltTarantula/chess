@@ -253,3 +253,7 @@ Menu options:
    * Could allow others to join in your place
    * If resigned, say "You resigned, can't leave resigned game"
 * all players should be notified when players or observers enter/leave game
+* WebSocketCommunicator shouldn't refer directly to ChessClient
+  * create interface ServerMessageObserver that ChessClient implements (```notify``` method) with ```ServerMessage message``` as param
+  * WebSocketCommunicator references ServerMessageObserver
+  * indirect reference to ChessClient

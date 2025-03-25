@@ -63,7 +63,7 @@ public class ServerFacadeTests {
     void login_incorrectPassword() throws Exception {
         facade.register("player3", "password", "p3@email.com");  // Register first
         Exception exception = assertThrows(Exception.class, () -> {
-            facade.login("player3", "wrongpassword");  // Attempt login with wrong password
+            facade.login("player3", "wrongPassword");  // Attempt login with wrong password
         });
         assertTrue(exception.getMessage().contains("Invalid credentials"), "Should throw exception for invalid password");
     }
