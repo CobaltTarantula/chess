@@ -198,3 +198,34 @@ try(Connection c = DriverManager.getConnection(connectionURL)){
 * **XMLFormatter**
 ### Logger Configuration
 * configuration class with logger instance inside
+## Websocket
+* label method with ```@WebSocket```
+* server requests similar to normal but call ```webSocket``` method with suffix
+* Spark.get...
+* ```onMessage``` method labeled with ```@OnWebSocketMessage``` with parameters ```Session session, String message```
+* ```session.getRemote().sendString("WebSocket response: " + message);```
+* Have a map of all the sessions that I get with the keys = GameID
+### WebSocket client
+* library gonna handle all the low-level stuff we don't wanna worry about
+* Install **glassfish.tyrus.bundles.standalone.client 1.15**
+```java
+public class WSClient extends Endpoint {
+    private Session session;
+
+    public WSClient() throws Exception {
+        URI uri = new URI("ws://localhost:8080/connect");
+        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        this.session = container.connectToServer(this, uri);
+
+        this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+            public void onMessage(String message) {
+                System.out.println(message);
+            }
+        });
+    }
+    
+  public void send(String msg) throws Exception {this.sessiongetBasicRemote().sendText(msg);}  
+  public void onOpen(Session session, EndpointConfig endpointConfig) {}
+}
+```
+## Chess Phase 6
