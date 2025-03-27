@@ -58,6 +58,9 @@ public class GameService {
     }
 
     private GameData updateGame(GameData game, String userName, String playerColor) throws DataAccessException {
+        if (game == null) {
+            throw new DataAccessException("bad request");
+        }
         // validate color
         if (playerColor == null || (!playerColor.equals("WHITE") && !playerColor.equals("BLACK"))) {
             throw new DataAccessException("bad request");

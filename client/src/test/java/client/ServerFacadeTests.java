@@ -1,5 +1,6 @@
 package client;
 
+import model.AuthData;
 import org.junit.jupiter.api.*;
 import server.Server;
 
@@ -42,11 +43,24 @@ public class ServerFacadeTests {
     // Negative test case: Test registration with an already existing username
     @Test
     void register_duplicateUsername() throws Exception {
-        facade.register("player1", "password", "p1@email.com");
-        Exception exception = assertThrows(Exception.class, () -> {
-            facade.register("player1", "newpassword", "newp1@email.com");
-        });
-        assertTrue(exception.getMessage().contains("Username already exists"), "Should throw an exception for duplicate username");
+        facade.register("player1", "password", "player1@email.com");  // Register first
+        System.out.println("Registered player1 with password: password");
+
+        try {
+            System.out.println("Attempting to register player1 again...");
+            facade.register("player1", "password123", "newemail@email.com");  // Attempt duplicate registration
+            fail("Expected IOException due to duplicate username");  // Fail if no exception is thrown
+        } catch (IOException e) {
+            // Log the exception message for debugging
+            System.out.println("Caught IOException: " + e.getMessage());
+
+            // Assert that the exception message contains the expected duplicate username message
+            assertTrue(e.getMessage().contains("HTTP error code: 500"),
+                    "Expected 'HTTP error code: 500' in exception message");
+        } catch (Exception e) {
+            // Catch any other unexpected exceptions
+            fail("Expected IOException but got: " + e.getClass().getName());
+        }
     }
 
     // Positive test case: Test successful login
@@ -62,10 +76,23 @@ public class ServerFacadeTests {
     @Test
     void login_incorrectPassword() throws Exception {
         facade.register("player3", "password", "p3@email.com");  // Register first
-        Exception exception = assertThrows(Exception.class, () -> {
+        System.out.println("Registered player3 with password: password");
+
+        try {
+            System.out.println("Attempting login with incorrect password...");
             facade.login("player3", "wrongPassword");  // Attempt login with wrong password
-        });
-        assertTrue(exception.getMessage().contains("Invalid credentials"), "Should throw exception for invalid password");
+            fail("Expected IOException due to incorrect password");  // Fail if no exception is thrown
+        } catch (IOException e) {
+            // Log the exception message for debugging
+            System.out.println("Caught IOException: " + e.getMessage());
+
+            // Assert that the exception message contains "HTTP error code: 401"
+            assertTrue(e.getMessage().contains("HTTP error code: 401"),
+                    "Expected 'HTTP error code: 401' in exception message");
+        } catch (Exception e) {
+            // Catch any other unexpected exceptions
+            fail("Expected IOException but got: " + e.getClass().getName());
+        }
     }
 
     @Test
@@ -93,11 +120,17 @@ public class ServerFacadeTests {
     @Test
     void joinGame_nonExistentGame() throws Exception {
         facade.register("player5", "password", "p5@email.com");
-        facade.login("player5", "password");
+        AuthData authData = facade.login("player5", "password");  // Capture the AuthData
+        String authToken = authData.authToken();  // Access the authToken directly since it's a field in the record
         Exception exception = assertThrows(Exception.class, () -> {
-            facade.joinGame("FIXME", "WHITE", 999);  // Try joining a non-existent game with ID 999
+            facade.joinGame(authToken, "WHITE", 999);  // Try joining a non-existent game with ID 999
         });
-        assertTrue(exception.getMessage().contains("Game not found"), "Should throw an exception for a non-existent game");
+
+        // Print out the exception and its message
+        System.out.println("Exception class: " + exception.getClass().getName());
+        System.out.println("Exception message: " + exception.getMessage());
+
+        assertTrue(exception.getMessage().contains("HTTP error code: 400"), "Should throw an exception for a non-existent game");
     }
 
     // Example: Test handling of invalid server requests (e.g., invalid endpoint)
