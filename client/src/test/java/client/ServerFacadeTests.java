@@ -77,6 +77,9 @@ public class ServerFacadeTests {
         // Retrieve the authentication token from the login response
         String authToken = authData.authToken();
 
+        // Create a game before listing
+        facade.createGame(authToken, "Test Game");
+
         // Now pass the auth token when calling listGames
         var games = facade.listGames(authToken);  // Assuming listGames requires an auth token
 
