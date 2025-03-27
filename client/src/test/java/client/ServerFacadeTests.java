@@ -96,6 +96,29 @@ public class ServerFacadeTests {
     }
 
     @Test
+    void createGameSuccess() throws Exception {
+        var authData = facade.register("player6", "password", "p6@email.com");
+        String authToken = authData.authToken();
+
+        // Create a game before checking the list
+        facade.createGame(authToken, "Test Game");
+
+        // List games and verify the new game is included
+        var games = facade.listGames(authToken);
+
+        // Verify at least one game matches the expected name
+        boolean gameExists = games.stream().anyMatch(game -> game.gameName().equals("Test Game"));
+        assertTrue(gameExists, "Created game should be in the list");
+    }
+
+    @Test
+    void createGameInvalidAuth() {
+        Exception exception = assertThrows(IOException.class, () -> facade.createGame("invalidAuthToken", "Invalid Game"));
+        assertTrue(exception.getMessage().contains("401"), "Should throw unauthorized error for invalid auth token");
+    }
+
+
+    @Test
     void listGamesSuccess() throws Exception {
         // Register and login a player
         facade.register("player4", "password", "p4@email.com");
@@ -115,6 +138,31 @@ public class ServerFacadeTests {
         assertFalse(games.isEmpty(), "Game list should have at least one game");
     }
 
+    @Test
+    void listGamesInvalidAuth() {
+        Exception exception = assertThrows(IOException.class, () -> facade.listGames("invalidAuthToken"));
+        assertTrue(exception.getMessage().contains("401"), "Should throw unauthorized error for invalid auth token");
+    }
+
+    @Test
+    void joinGameSuccess() throws Exception {
+        var authData = facade.register("player7", "password", "p7@email.com");
+        String authToken = authData.authToken();
+
+        // Create a game
+        facade.createGame(authToken, "Joinable Game");
+
+        // Retrieve the game ID from the list of games
+        var games = facade.listGames(authToken);
+        var game = games.stream().filter(g -> g.gameName().equals("Joinable Game")).findFirst()
+                .orElseThrow(() -> new Exception("Game not found"));
+
+        // Join the game using its ID
+        facade.joinGame(authToken, "WHITE", game.gameID());
+
+        // If no exception is thrown, assume success
+        assertTrue(true, "Player should be able to join an existing game");
+    }
 
     // Negative test case: Test action on an unavailable game (e.g., joining a non-existent game)
     @Test

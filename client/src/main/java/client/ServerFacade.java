@@ -100,7 +100,9 @@ public class ServerFacade {
         reqJson.addProperty("authToken", authToken);
         reqJson.addProperty("playerColor", playerColor);
         reqJson.addProperty("gameID", gameId);
-        sendRequest("PUT", url, reqJson, Integer.class);
+
+        // Call sendRequest but don't store the response
+        sendRequest("PUT", url, reqJson, JsonObject.class);
     }
 
     public Collection<GameData> listGames(String authToken) throws IOException {
