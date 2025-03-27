@@ -11,6 +11,8 @@ import java.lang.reflect.Type;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class ServerFacade {
@@ -104,8 +106,12 @@ public class ServerFacade {
     public Collection<GameData> listGames(String authToken) throws IOException {
         this.authToken = authToken;
         URL url = validateUrl("/game");
-        Map<String, String> res = sendRequest("GET", url, null, new TypeToken<Map<String, String>>() {}.getType());
-        return new Gson().fromJson(new Gson().toJson(res.get("games")), new TypeToken<Collection<GameData>>() {}.getType());
+
+        // Make request and safely extract game list
+        Map<String, List<GameData>> res = sendRequest("GET", url, null, new TypeToken<Map<String, List<GameData>>>() {}.getType());
+
+        // Ensure we return a non-null list (empty list if no games exist)
+        return res != null ? res.getOrDefault("games", Collections.emptyList()) : Collections.emptyList();
     }
 
     public void clear() throws IOException {

@@ -257,7 +257,7 @@ Menu options:
   * create interface ServerMessageObserver that ChessClient implements (```notify``` method) with ```ServerMessage message``` as param
   * WebSocketCommunicator references ServerMessageObserver
   * indirect reference to ChessClient 
-## Chicken-and-Egg Problem with Json/Gson
+### Chicken-and-Egg Problem with Json/Gson
 * Gson standard type adapter 
 * deserializer
   * ```implements JsonDeserializer<Class>```
@@ -267,3 +267,14 @@ Menu options:
   }
   ```
 * runtime type adapter
+### Websocket Request Handler
+* check slides
+### ServerMessage (from server)
+* three message types
+  * **NOTIFICATION**
+  * **ERROR**
+  * **LOAD_GAME**
+* use deserializer or whatever used for type adapter
+### Chess Client
+* check slides
+## Computer Security
