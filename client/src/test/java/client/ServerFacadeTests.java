@@ -34,7 +34,7 @@ public class ServerFacadeTests {
 
     // Positive test case: Test successful registration
     @Test
-    void register_Success() throws Exception {
+    void registerSuccess() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
         assertNotNull(authData.authToken(), "Auth token should not be null after successful registration");
         assertTrue(authData.authToken().length() > 10, "Auth token should be long enough");
@@ -42,7 +42,7 @@ public class ServerFacadeTests {
 
     // Negative test case: Test registration with an already existing username
     @Test
-    void register_DuplicateUsername() throws Exception {
+    void registerDuplicateUsername() throws Exception {
         facade.register("player1", "password", "player1@email.com");  // Register first
         System.out.println("Registered player1 with password: password");
 
@@ -65,7 +65,7 @@ public class ServerFacadeTests {
 
     // Positive test case: Test successful login
     @Test
-    void login_Success() throws Exception {
+    void loginSuccess() throws Exception {
         facade.register("player2", "password", "p2@email.com");  // First register the user
         var authData = facade.login("player2", "password");
         assertNotNull(authData.authToken(), "Auth token should not be null after successful login");
@@ -74,7 +74,7 @@ public class ServerFacadeTests {
 
     // Negative test case: Test login with incorrect password
     @Test
-    void login_IncorrectPassword() throws Exception {
+    void loginIncorrectPassword() throws Exception {
         facade.register("player3", "password", "p3@email.com");  // Register first
         System.out.println("Registered player3 with password: password");
 
@@ -96,7 +96,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void listGames_Success() throws Exception {
+    void listGamesSuccess() throws Exception {
         // Register and login a player
         facade.register("player4", "password", "p4@email.com");
         var authData = facade.login("player4", "password");  // login returns authData
@@ -118,7 +118,7 @@ public class ServerFacadeTests {
 
     // Negative test case: Test action on an unavailable game (e.g., joining a non-existent game)
     @Test
-    void joinGame_NonExistentGame() throws Exception {
+    void joinGameNonExistentGame() throws Exception {
         facade.register("player5", "password", "p5@email.com");
         AuthData authData = facade.login("player5", "password");  // Capture the AuthData
         String authToken = authData.authToken();  // Access the authToken directly since it's a field in the record
