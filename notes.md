@@ -278,3 +278,69 @@ Menu options:
 ### Chess Client
 * check slides
 ## Computer Security
+* computer systems should be security-focused when designed
+* **bad actors** AKA hackers want to:
+  * access data
+    * at rest
+    * active
+  * access computers
+    * Inject viruses, Launch attacks from someone else’s machines 
+    * Reconfigure or disable systems, Destroy data 
+    * Monitor activity
+  * disable a system so that it can't be used
+    * DDoS (distributed denial of service) attacks
+### Cryptographic (One-Way) Hash Functions
+* One-Way
+* Deterministic
+* Fixed-Size
+* Pseudo-Random
+### Cryptographic Hash Algorithms
+* Cracked
+  * MD-5
+  * SHA-1
+    * used by git commits
+* Uncracked/Modern
+  * SHA-2 (supersedes MD-5 and SHA-1)
+  * SHA-3
+### Password hashing
+* methods to mitigate attacks
+  * **add salt** - append to password before hashing, then store that into the database
+  * **hash passwords** using cryptographic hash function that is expensive to compute - makes it harder to attack
+    * Argon2
+    * scrypt
+    * bcrypt
+### Encryption/Decryption
+* **Encryption:** process of encoding data so that only authorized can read
+* **Decryption:** process of decoding data back to og form
+* **Plaintext:** data to be protected
+* **Ciphertext:** encrypted form of data
+* **Key:** info piece used as input to crypto algorithm to encode or decode
+* **Key Size:** number of bits in key
+### Encryption Algorithms
+* Categories
+  1. **Symmetric Key:** Secret Key algorithms
+     * Same key used for encryption and decryption
+  2. **Asymmetric Key:** Public Key algorithms
+     * different keys for encryption and decryption
+     * mathematical relationship (generated together)
+     * encrypt with **public key** and person with matching **private key** can decrypt it
+### Public Key Encryption
+* Disadvantages of public key encryption
+  * can only encrypt small amount of data
+  * much slower than symmetric key encryption
+  * private keys need to be securely stored and never shared
+* Why use?
+  * Secure symmetric key exchange
+  * digital signatures
+#### _**public key cryptography is one of the most important inventions in the history of computers**_
+### Secure Key Exchange
+* basically using public keys and sending and encrypting and decrypting, both sides get what they need
+### HTTPS/TLS Server Authentication
+* Client to verify id of Server:
+  * **Public Key Certificates:** Digital Certificates = Public Key + Key Owner's ID info
+  * during HTTPS/TLS Handshake, Server sends its public key to Client in public form
+* **certificate authorities:** trusted organizations that give certificate files
+* to obtain:
+  * generate public/private key pair
+  * secure private key
+  * send public key and id info to certificate authority in **certificate signing request (CSR)**
