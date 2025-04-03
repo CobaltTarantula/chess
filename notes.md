@@ -344,3 +344,81 @@ Menu options:
   * generate public/private key pair
   * secure private key
   * send public key and id info to certificate authority in **certificate signing request (CSR)**
+## Concurrency
+### Threads
+* programs default to executing main, then terminating upon completing main
+* For a program to do multiplethings cocurrently, it must create multiple **threads** of control to represent each action the program is working on
+* programs start with **main thread**
+ * additional threads can be created as needed
+* each thread has its own runtime stack, allowing independent runtime from other stacks
+### Parallel vs. Concurrent vs. Sequential Execution
+* **concurrently**: multiple tasks + single CPU (core) -> OS swaps which task is executing to allow each to run
+* **parallel**: multiple CPUs (cores) -> OS runs tasks at the _same time_
+* **sequentially**: each task has to run to completion before another can start
+### Thread Pools
+* in order to be more efficient, reuse previous threads
+* this allows for more tasks to run in the background
+* **thread pool**:
+ - Create number of threads at initialization before needed, and store in list
+ - when run task on another thread
+  - if another thread available in pool, run task on one of the available threads
+  - if no thread currently available in pool, add task to **task queue**
+ - when task finishes running
+   - if tasks in queue, remove next in queue and run it on available thread
+   - if no tasks in queue, put thread back in pool
+* Task submitters -> Task Queue -> Thread Pool
+* **Executor Service**: Task Queue & Thread Pool
+* **Executors class**: has several methods for creating pre-configured thread pool instances
+* Two ways to write executable tasks for **ExecutorService**:
+ 1. write class implementing **Runnable** interface
+    * code goes to **public void run()** method
+    * preferred when you don't need to return a result
+ 3. write class implementing **Callable <V>** interface
+    * code goes in **public V call()** method
+    * preferred when need to return result
+### Race Conditions/Hazards
+* correctness of program depends on relative timing of interleaving multiple threads/processes
+  * nondeterministic behavior
+  * sometimes works or not
+  * threads interleave differently each run
+* Caused by shared resources accessed concurrently by multiple threads
+  * in-memory data structs
+  * io
+    * files
+    * databases
+    * sockets
+    * terminal/screen
+### Thread-safe code
+1. **Database transactions**
+   * normally, single SQL statements commit immediately
+   * sequence of multiple SQL statements executed as atomic unit through **database transactions**
+   * serialize transactions that are concurrently executed by different threads/processes
+2. **Synchronized methods (Java)**
+   * **critical section**: part of code only one thread should run at a time
+   * **synchronized** prevents multiple threads from entering the method on the same object at the same time
+3. **Synchronized code blocks (Java)**
+ * ensure single-threaded access to method on single object
+4. **Atomic operations**
+   * **synchronized code blocks** protect **critical sections**
+   * read or write var vals with one CPU operation -> eliminate use of **synchronized methods** or **synchronized code blocks**
+### Race Conditions in Chess
+* Spark creates multiple thread objects behind the scenes to handle multiple incoming client reqs/messages concurrently
+* websocket library (used by Chess client) creates additional threads to handle WS messages sent by server
+* possible race conditions:
+  - Multiple users registering concurrently with the same username
+  - Multiple users concurrently claiming the same side in the same game
+  - Multiple users concurrently joining or leaving a game (even different ones)
+### Race Conditions in Chess Server
+* Multiple threads writing to same web socket simultaneously
+  * use "game locks" so the server processes only one web socket message per game at a time
+* Too many reqs/messages at a time takes all of the database connections
+  * use "connection pool" to limit how many connections can be open at a time
+### Race Conditions in Chess Client
+* two threads:
+  1. Main - processes user input
+  2. Web socket - processes messages from server
+* Both threads read/write to local Game object simultaneously
+  * synchronize all code reading/writing Game object -> only one thread accesses at a time
+* Both threads print output to terminal simultaneously (draw board and print messages)
+  * synchronize all code printing output to terminal -> only one thread writes to terminal at a time
+## Command-line Builds
