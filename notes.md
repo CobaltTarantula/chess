@@ -371,10 +371,10 @@ Menu options:
 * **Executors class**: has several methods for creating pre-configured thread pool instances
 * Two ways to write executable tasks for **ExecutorService**:
  1. write class implementing **Runnable** interface
-    * code goes to **public void run()** method
+    * code goes to ```public void run()``` method
     * preferred when you don't need to return a result
  3. write class implementing **Callable <V>** interface
-    * code goes in **public V call()** method
+    * code goes in ```public V call()``` method
     * preferred when need to return result
 ### Race Conditions/Hazards
 * correctness of program depends on relative timing of interleaving multiple threads/processes
@@ -422,3 +422,47 @@ Menu options:
 * Both threads print output to terminal simultaneously (draw board and print messages)
   * synchronize all code printing output to terminal -> only one thread writes to terminal at a time
 ## Command-line Builds
+### Need for Command-line Builds
+* building software requires a bunch of steps
+* manually building software with only an IDE can be laborious and error-prone
+* with **command-line builds**, anyone can compile, test, verify, and deploy software with simple shell commands
+  * much simpler and supports continuous integration and deployment
+* most languages/environments have tools for doing **command-line builds**
+### Maven Project Structure
+* **maven**: defines standard directory and file sturcture for projects
+  * by conforming to standard structure -> free build functionality
+  * **pom.xml**: config file for proj in root dir
+* **maven** can auto-generate new proj dir and file struct
+* larg projects are organized into **modules**
+  * server, client, shared, etc...
+### Dependencies
+* Chess: GSON, MySQL driver, Spark, Web socket libraries
+* mvnrepository.org (online repo of available code libraries)
+* maven auto-downloads dependencies as part of build process
+* if have JAR dependency not available in the site, install JAR file into local Maven repo
+### Plugins
+* maven has a **plugin** architecture
+* core features implemented as **plugins**
+* **plugins**
+  1. **build plugins**: run during build process (compile, test, package, install)
+     * ```mvn install```
+  2. **reporting plugins**: run during documentation website generation
+     * ```mvn site```
+### How Plugins Work
+* each plugin implements a group of **goals**/commands it can run
+  * ```mvn <plugin>:help```
+* plugin goals can be manually executed from command-line
+  * ```mvn <plugin>:<goal>```
+* plugin goals can be run manually, but usually are executed automatically by Maven when appropriate
+* **build lifecycle**: sequence of phases of Maven build
+* by default, each build plugin goal is bound to >=0 phases
+* when proj includes plugin, plugin goals run during lifecycle phases that they're bound to
+* list all plugin goals of phase
+  * ```
+    mvn help:describe -Dcmd=<phase>
+    mvn help:describe -Dcmd=compile
+    ```
+### IDE + Automated Builds
+* IDE does many of the same things automated build does
+* IDE has internal build systems, but can allow external tools (like Maven) -> best of both worlds
+  * ex. **IntelliJ**
