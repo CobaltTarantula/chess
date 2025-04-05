@@ -117,7 +117,7 @@ public class ServerFacade {
     }
 
     public void clear() throws IOException {
-        URL url = new URL(baseUrl + "/db");
+        URL url = validateUrl("/db");
         JsonObject reqJson = new JsonObject();
         doDelete(url, reqJson);
     }
@@ -146,7 +146,7 @@ public class ServerFacade {
 
     public void makeInvalidRequest() throws IOException {
         // Perform an HTTP request to a non-existent endpoint (e.g., "/invalid")
-        URL url = new URL(baseUrl + "/invalid");  // Invalid endpoint
+        URL url = validateUrl("/invalid");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
