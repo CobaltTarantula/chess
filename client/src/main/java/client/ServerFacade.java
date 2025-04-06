@@ -28,7 +28,6 @@ public class ServerFacade {
         connection.setReadTimeout(5000);
         connection.setRequestMethod(method);
 
-        // PUT, POST, DELETE send a body
         boolean hasBody = method.equals("POST") || method.equals("PUT") || method.equals("DELETE");
         connection.setDoOutput(hasBody);
 
@@ -116,7 +115,6 @@ public class ServerFacade {
         reqJson.addProperty("playerColor", playerColor);
         reqJson.addProperty("gameID", gameId);
 
-        // Call sendRequest but don't store the response
         sendRequest("PUT", url, reqJson, JsonObject.class);
     }
 
@@ -124,10 +122,8 @@ public class ServerFacade {
         this.authToken = authToken;
         URL url = validateUrl("/game");
 
-        // Make request and safely extract game list
         Map<String, List<GameData>> res = sendRequest("GET", url, null, new TypeToken<Map<String, List<GameData>>>() {}.getType());
 
-        // Ensure we return a non-null list (empty list if no games exist)
         return res != null ? res.getOrDefault("games", Collections.emptyList()) : Collections.emptyList();
     }
 
