@@ -9,7 +9,6 @@ import model.GameData;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -28,24 +27,27 @@ public class ServerFacade {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setReadTimeout(5000);
         connection.setRequestMethod(method);
-        connection.setDoOutput(!method.equals("GET"));
-        connection.addRequestProperty("Authorization", authToken);
 
-        // Send request body if needed
-        if (reqJson != null && !method.equals("GET")) {
+        // PUT, POST, DELETE send a body
+        boolean hasBody = method.equals("POST") || method.equals("PUT") || method.equals("DELETE");
+        connection.setDoOutput(hasBody);
+
+        if (authToken != null) {
+            connection.addRequestProperty("Authorization", authToken);
+        }
+
+        connection.setRequestProperty("Content-Type", "application/json");
+
+        if (hasBody && reqJson != null) {
             try (OutputStream outputStream = connection.getOutputStream()) {
                 outputStream.write(new Gson().toJson(reqJson).getBytes());
             }
         }
 
-        // Check response code
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            if (responseType == Void.class) {
-                return null;  // No content to deserialize
-            }
+            if (responseType == Void.class) return null;
 
-            // Deserialize response if content is expected
             try (InputStream resBody = connection.getInputStream()) {
                 return new Gson().fromJson(new InputStreamReader(resBody), responseType);
             }
@@ -88,13 +90,14 @@ public class ServerFacade {
 
     public int logout(String authToken) throws IOException {
         this.authToken = authToken;
-        URL url = validateUrl( "/session");
+        URL url = validateUrl("/session");
         JsonObject reqJson = new JsonObject();
         reqJson.addProperty("authToken", authToken);
-        return doDelete(url, reqJson);
+        sendRequest("DELETE", url, reqJson, Void.class);
+        return HttpURLConnection.HTTP_OK;
     }
 
-    public void createGame(String authToken, String gameName) throws IOException {
+    public Integer createGame(String authToken, String gameName) throws IOException {
         this.authToken = authToken;
         URL url = validateUrl("/game");
         JsonObject reqJson = new JsonObject();
@@ -102,7 +105,7 @@ public class ServerFacade {
         reqJson.addProperty("gameName", gameName);
         Map<String, String> res = sendRequest("POST", url, reqJson, new TypeToken<Map<String, String>>() {}.getType());
         assert res != null;
-        Integer.valueOf(res.get("gameID"));
+        return Integer.valueOf(res.get("gameID"));
     }
 
     public void joinGame(String authToken, String playerColor, int gameId) throws IOException {
@@ -131,29 +134,6 @@ public class ServerFacade {
     public void clear() throws IOException {
         URL url = validateUrl("/db");
         JsonObject reqJson = new JsonObject();
-        doDelete(url, reqJson);
-    }
-
-    public int doDelete(URL url, JsonObject reqJson) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        connection.setReadTimeout(5000);
-        connection.setRequestMethod("DELETE");
-        connection.setDoOutput(true);
-
-        //header
-        connection.addRequestProperty("Authorization", authToken);
-
-        try (OutputStream outputStream = connection.getOutputStream()) {
-            var jsonBody = new Gson().toJson(reqJson);
-            outputStream.write(jsonBody.getBytes());
-        }
-
-        int responseCode = connection.getResponseCode();
-        if (responseCode != HttpURLConnection.HTTP_OK) {
-            throw new IOException("Failed to delete: HTTP error code : " + responseCode);
-        }
-
-        return responseCode;
+        sendRequest("DELETE", url, reqJson, Void.class);
     }
 }

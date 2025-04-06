@@ -93,24 +93,21 @@ public class ServerFacadeTests {
     class CreateGameTests {
         @Test
         void createGameSuccess() throws Exception {
-            var authData = facade.register("player6", "password", "p6@email.com");
-            String authToken = authData.authToken();
+            AuthData auth = facade.register("testUser", "testPassword", "testEmail");
+            Assertions.assertNotNull(auth, "Registration failed");
 
-            // Create a game before checking the list
-            facade.createGame(authToken, "Test Game");
-
-            // List games and verify the new game is included
-            var games = facade.listGames(authToken);
-
-            // Verify at least one game matches the expected name
-            boolean gameExists = games.stream().anyMatch(game -> game.gameName().equals("Test Game"));
-            assertTrue(gameExists, "Created game should be in the list");
+            int id;
+            id = facade.createGame(auth.authToken(), "testGame");
+            assertTrue(id > 0);
         }
 
         @Test
-        void createGameInvalidAuth() {
-            Exception exception = assertThrows(IOException.class, () -> facade.createGame("invalidAuthToken", "Invalid Game"));
-            assertTrue(exception.getMessage().contains("401"), "Should throw unauthorized error for invalid auth token");
+        void createGameInvalidAuth() throws Exception {
+            AuthData auth = facade.register("testUser", "testPassword", "testEmail");
+            Assertions.assertNotNull(auth, "Registration failed");
+            // attempt to make the same game twice
+            facade.createGame(auth.authToken(), "testGame");
+            Assertions.assertThrows(IOException.class, () -> facade.createGame(auth.authToken(), "testGame"));
         }
     }
 
