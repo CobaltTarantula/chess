@@ -78,12 +78,11 @@ public class ChessPiece {
                     ChessMove singleMove = getPawnMove(board, myPosition, path[0], path[1]);
                     ChessMove doubleMove = getDoublePawnMoveIfValid(board, myPosition, path);
 
-                    if (singleMove != null) {
-                        if (canPromote(singleMove, teamColor)) {
-                            moves.addAll(getPawnPromotions(singleMove));
-                        } else {
-                            moves.add(singleMove);
-                        }
+                    if (singleMove != null && canPromote(singleMove, teamColor)) {
+                        moves.addAll(getPawnPromotions(singleMove));
+                    }
+                    else if (singleMove != null) {
+                        moves.add(singleMove);
                     }
 
                     if (doubleMove != null) {
