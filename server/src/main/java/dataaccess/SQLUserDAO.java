@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class SQLUserDAO implements UserDAO{
     @Override
     public void createUser(UserData user) throws DataAccessException {
-        String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());  // Hash the password
+        String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
         String query = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement(query)) {

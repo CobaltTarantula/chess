@@ -173,11 +173,10 @@ public class ChessPiece {
     }
 
     private boolean isOutOfBounds(ChessPosition position) {
-        // next position is within bounds
         return position.getRow() <= 0
                 || position.getRow() > 8
                 || position.getColumn() <= 0
-                || position.getColumn() > 8;  // next position is out of bounds
+                || position.getColumn() > 8;
     }
 
     private Collection<ChessMove> getPathLines(ChessBoard board, ChessPosition myPos, int vert, int horizon) {
@@ -191,7 +190,7 @@ public class ChessPiece {
             if (isOutOfBounds(newPos)){ break;}
 
             if (isOccupied(board, newPos)) {
-                if (board.getPiece(newPos).getTeamColor() != this.getTeamColor()){ // opponent's piece
+                if (board.getPiece(newPos).getTeamColor() != this.getTeamColor()){
                     possibleMoves.add(new ChessMove(myPos, newPos, null));
                 }
                 break;
@@ -210,7 +209,7 @@ public class ChessPiece {
         }
 
         if (isOccupied(board, newPos)) {
-            if (board.getPiece(newPos).getTeamColor() != this.getTeamColor()) { // opponent's piece
+            if (board.getPiece(newPos).getTeamColor() != this.getTeamColor()) {
                 return new ChessMove(myPos, newPos, null);
             }
             else{ return null;}

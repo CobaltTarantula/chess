@@ -15,15 +15,13 @@ public class SQLGameDAO implements GameDAO{
         String query = "INSERT INTO games (gameID, gameName, whiteUsername, blackUsername, chessGame) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement(query)) {
-                //body
                 statement.setInt(1, gameID);
                 statement.setString(2, gameName);
                 statement.setString(3, null);  // whiteUsername
                 statement.setString(4, null);  // blackUsername
-                // chessGame
+
                 var gameJson = new Gson().toJson(new ChessGame());
                 statement.setString(5, gameJson);
-
                 statement.executeUpdate();
             }
         }

@@ -14,9 +14,7 @@ public class MemGameDAO implements GameDAO{
     }
 
     public Integer createGame(String gameName, Integer gameID) {
-        // make new game
         GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
-        // put game in games
         games.put(gameID, newGame);
         return gameID;
     }

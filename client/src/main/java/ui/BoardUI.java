@@ -76,7 +76,7 @@ public class BoardUI {
     }
 
     private String getPiece(int row, int col) {
-        ChessPosition position = new ChessPosition(row, col + 1); // Ensure correct indexing
+        ChessPosition position = new ChessPosition(row, col + 1);
         ChessPiece piece = board.getPiece(position);
         if (piece == null){
             return EMPTY;

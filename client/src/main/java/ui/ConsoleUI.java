@@ -1,6 +1,5 @@
 package ui;
 
-// imports here
 import chess.ChessGame;
 import client.ServerFacade;
 import model.AuthData;
@@ -59,7 +58,6 @@ public class ConsoleUI {
 
     private boolean isInList(String input) {
         int gameNum;
-        // check valid input
         try {
             gameNum = Integer.parseInt(input);
         } catch (NumberFormatException e) {

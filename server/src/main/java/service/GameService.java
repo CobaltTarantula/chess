@@ -23,15 +23,12 @@ public class GameService {
         if (isValid(authToken)){ throw new DataAccessException("unauthorized");}
         if (gameName == null){ throw new DataAccessException("bad request");}
 
-        // from game name get ID
         Integer gameID = generateID(gameName);
 
-        // verify gameID
         if (gameDAO.getGame(gameID) != null) {
             throw new DataAccessException("game already exists");
         }
 
-        // create and store game, return gameID
         return gameDAO.createGame(gameName, gameID);
     }
 
@@ -43,17 +40,13 @@ public class GameService {
     public GameData joinGame(String authToken, String playerColor, Integer gameID) throws DataAccessException {
         if (isValid(authToken)){ throw new DataAccessException("unauthorized");}
 
-        // from authToken get username
         String userName = authDAO.getUsername(authToken);
 
-        // verify game
         if (gameID == null){ throw new DataAccessException("bad request");}
         GameData game = gameDAO.getGame(gameID);
 
-        // new player
         GameData updatedGame = updateGame(game, userName, playerColor);
 
-        // save game
         return gameDAO.saveGame(gameID, updatedGame);
     }
 
@@ -61,17 +54,14 @@ public class GameService {
         if (game == null) {
             throw new DataAccessException("bad request");
         }
-        // validate color
         if (playerColor == null || (!playerColor.equals("WHITE") && !playerColor.equals("BLACK"))) {
             throw new DataAccessException("bad request");
         }
 
-        // add white player
         if (Objects.equals(playerColor, "WHITE") && game.whiteUsername() == null) {
             return new GameData(game.gameID(), userName, game.blackUsername(), game.gameName(), game.game());
         }
 
-        // add black player
         else if (Objects.equals(playerColor, "BLACK") && game.blackUsername() == null) {
             return new GameData(game.gameID(), game.whiteUsername(), userName, game.gameName(), game.game());
         }

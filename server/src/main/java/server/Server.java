@@ -166,8 +166,7 @@ public class Server {
     public Object errorHandler(Exception e, Response res) {
         String errorMessage = e.getMessage();
         int statusCode = 0;
-        // Logging the full stack trace of the exception for better visibility
-//        e.printStackTrace();  // This prints the stack trace to the console
+
         statusCode = switch (errorMessage) {
             case "data not cleared.",
                  "must fill all fields",

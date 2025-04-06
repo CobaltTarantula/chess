@@ -6,7 +6,6 @@ import java.util.UUID;
 public class SQLAuthDAO implements AuthDAO{
     @Override
     public String createAuth(String username) throws DataAccessException {
-        // string sql request
         String query = "INSERT INTO auths (authToken, username) VALUES (?, ?)";
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
@@ -28,7 +27,6 @@ public class SQLAuthDAO implements AuthDAO{
         String query = "SELECT authToken FROM auths WHERE authToken = ?";
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
-                // body
                 statement.setString(1, authToken);
                 try(var findAuth = statement.executeQuery()){
                     if (findAuth.next()) {
@@ -50,7 +48,6 @@ public class SQLAuthDAO implements AuthDAO{
         String query = "SELECT username FROM auths WHERE authToken = ?";
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
-                // body code
                 statement.setString(1, authToken);
                 try(var results = statement.executeQuery()){
                     if (results.next()) {
@@ -70,7 +67,6 @@ public class SQLAuthDAO implements AuthDAO{
         String query = "DELETE FROM auths WHERE authToken = ?";
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
-                // body code
                 statement.setString(1, authToken);
                 statement.executeUpdate();
             }
@@ -113,7 +109,7 @@ public class SQLAuthDAO implements AuthDAO{
         String query = "SELECT 1 FROM auths WHERE authToken = ? LIMIT 1";
         try(Connection conn = DatabaseManager.getConnection()){
             try(var statement = conn.prepareStatement(query)){
-                statement.setString(1, authToken); // Set the authToken parameter
+                statement.setString(1, authToken);
                 try(var authList = statement.executeQuery()){
                     if(authList.next()){
                         return true;

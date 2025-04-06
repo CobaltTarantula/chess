@@ -31,27 +31,23 @@ public class UserService {
     }
 
     public AuthData loginUser(UserData user) throws DataAccessException {
-        // test if all fields are filled
         if (user.username() == null || user.password() == null) {
             throw new DataAccessException("must fill all fields");
         }
 
-        // check for bad username
         if (userDAO.getUser(user.username(), user.password()) == null) {
             throw new DataAccessException("unauthorized");
         }
 
-        // check if given password matches the one in the database
         String username = user.username();
 
         UserData savedUser = userDAO.getUser(username, user.password());
         String givenPassword = user.password();
-        String savedPassword = savedUser.password(); // should return hashed password
+        String savedPassword = savedUser.password();
         if (!verifyPassword(givenPassword, savedPassword)) {
             throw new DataAccessException("unauthorized");
         }
 
-        // correct password given, create and return auth token
         String token = authDAO.createAuth(username);
         return new AuthData(token, username);
     }
