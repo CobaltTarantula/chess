@@ -31,18 +31,26 @@ public class ServerFacade {
         connection.setDoOutput(!method.equals("GET"));
         connection.addRequestProperty("Authorization", authToken);
 
+        // Send request body if needed
         if (reqJson != null && !method.equals("GET")) {
             try (OutputStream outputStream = connection.getOutputStream()) {
                 outputStream.write(new Gson().toJson(reqJson).getBytes());
             }
         }
 
-        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+        // Check response code
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            if (responseType == Void.class) {
+                return null;  // No content to deserialize
+            }
+
+            // Deserialize response if content is expected
             try (InputStream resBody = connection.getInputStream()) {
                 return new Gson().fromJson(new InputStreamReader(resBody), responseType);
             }
         } else {
-            throw new IOException("HTTP error code: " + connection.getResponseCode());
+            throw new IOException("HTTP error code: " + responseCode);
         }
     }
 
@@ -62,7 +70,9 @@ public class ServerFacade {
         reqJson.addProperty("username", username);
         reqJson.addProperty("password", password);
         reqJson.addProperty("email", email);
-        Map<String, String> res = sendRequest("POST", url, reqJson, new TypeToken<Map<String, String>>() {}.getType());
+        Map<String, String> res = sendRequest("POST", url, reqJson,
+                new TypeToken<Map<String, String>>() {}.getType());
+        assert res != null;
         return new AuthData(res.get("authToken"), res.get("username"));
     }
 
@@ -72,15 +82,16 @@ public class ServerFacade {
         reqJson.addProperty("username", username);
         reqJson.addProperty("password", password);
         Map<String, String> res = sendRequest("POST", url, reqJson, new TypeToken<Map<String, String>>() {}.getType());
+        assert res != null;
         return new AuthData(res.get("authToken"), res.get("username"));
     }
 
-    public void logout(String authToken) throws IOException {
+    public int logout(String authToken) throws IOException {
         this.authToken = authToken;
-        URL url = validateUrl("/session");
+        URL url = validateUrl( "/session");
         JsonObject reqJson = new JsonObject();
         reqJson.addProperty("authToken", authToken);
-        sendRequest("DELETE", url, reqJson, Integer.class);
+        return doDelete(url, reqJson);
     }
 
     public void createGame(String authToken, String gameName) throws IOException {
@@ -90,6 +101,7 @@ public class ServerFacade {
         reqJson.addProperty("authToken", authToken);
         reqJson.addProperty("gameName", gameName);
         Map<String, String> res = sendRequest("POST", url, reqJson, new TypeToken<Map<String, String>>() {}.getType());
+        assert res != null;
         Integer.valueOf(res.get("gameID"));
     }
 
@@ -122,25 +134,26 @@ public class ServerFacade {
         doDelete(url, reqJson);
     }
 
-    private void doDelete(URL url, JsonObject reqJson) throws IOException {
+    public int doDelete(URL url, JsonObject reqJson) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setReadTimeout(5000);
         connection.setRequestMethod("DELETE");
         connection.setDoOutput(true);
-        connection.setRequestProperty("Content-Type", "application/json");
 
-        // Write JSON body (if needed)
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = reqJson.toString().getBytes(StandardCharsets.UTF_8);
-            os.write(input, 0, input.length);
+        //header
+        connection.addRequestProperty("Authorization", authToken);
+
+        try (OutputStream outputStream = connection.getOutputStream()) {
+            var jsonBody = new Gson().toJson(reqJson);
+            outputStream.write(jsonBody.getBytes());
         }
 
-        // Check response code
         int responseCode = connection.getResponseCode();
         if (responseCode != HttpURLConnection.HTTP_OK) {
-            throw new IOException("Failed to clear: HTTP " + responseCode);
+            throw new IOException("Failed to delete: HTTP error code : " + responseCode);
         }
 
-        // Close the connection
-        connection.disconnect();
+        return responseCode;
     }
 }
