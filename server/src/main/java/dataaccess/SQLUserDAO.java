@@ -28,30 +28,31 @@ public class SQLUserDAO implements UserDAO{
     @Override
     public UserData getUser(String username, String password) throws DataAccessException {
         String query = "SELECT * FROM users WHERE username = ?";
-        try (Connection conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement(query)) {
-                statement.setString(1, username);
-                try (var results = statement.executeQuery()) {
-                    if(results.next()) {
-                        String storedHashedPassword = results.getString("password");
-                        if (BCrypt.checkpw(password, storedHashedPassword)){
-                            return new UserData(
-                                    results.getString("username"),
-                                    storedHashedPassword,
-                                    results.getString("email")
-                            );
-                        }
-                    }
-                    else {
-                        return null;
-                    }
+        try (Connection conn = DatabaseManager.getConnection();
+             var statement = conn.prepareStatement(query)) {
+
+            statement.setString(1, username);
+
+            try (var results = statement.executeQuery()) {
+                if (!results.next()){
+                    return null;
                 }
+
+                String storedHashedPassword = results.getString("password");
+                if (!BCrypt.checkpw(password, storedHashedPassword)){
+                    return null;
+                }
+
+                return new UserData(
+                        results.getString("username"),
+                        storedHashedPassword,
+                        results.getString("email")
+                );
             }
-        }
-        catch (SQLException e) {
+
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override
