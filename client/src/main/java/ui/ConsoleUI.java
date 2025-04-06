@@ -198,7 +198,8 @@ public class ConsoleUI {
             numberedList.clear();
             out.println("Games:");
             for (var game : gamesList) {
-                out.println(i + " -- Name: " + game.gameName() + ", White player: " + game.whiteUsername() + ", Black player: " + game.blackUsername());
+                out.println(i + " -- Name: " + game.gameName() + ", White player: " + game.whiteUsername() +
+                        ", Black player: " + game.blackUsername());
                 numberedList.put(i, game);
                 i++;
             }

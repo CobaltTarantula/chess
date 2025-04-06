@@ -78,7 +78,9 @@ public class BoardUI {
     private String getPiece(int row, int col) {
         ChessPosition position = new ChessPosition(row, col + 1); // Ensure correct indexing
         ChessPiece piece = board.getPiece(position);
-        if (piece == null) return EMPTY;
+        if (piece == null){
+            return EMPTY;
+        }
 
         String pieceString;
         if(piece.getTeamColor()== ChessGame.TeamColor.WHITE) {

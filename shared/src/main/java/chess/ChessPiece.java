@@ -76,35 +76,16 @@ public class ChessPiece {
                 assert paths != null;
                 for (int[] path : paths) {
                     ChessMove singleMove = getPawnMove(board, myPosition, path[0], path[1]);
-                    ChessMove doubleMove = null;
-
-                    if (path[1] == 0 && isFirstMove(teamColor, myPosition)) {
-                        switch (teamColor) {
-                            case WHITE -> {
-                                ChessPosition oneStepForward = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
-                                ChessPosition twoStepsForward = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn());
-                                if (board.getPiece(oneStepForward) == null && board.getPiece(twoStepsForward) == null) {
-                                    doubleMove = getPawnMove(board, myPosition, path[0] + 1, path[1]);
-                                }
-                            }
-                            case BLACK -> {
-                                ChessPosition oneStepForward = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
-                                ChessPosition twoStepsForward = new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn());
-
-                                if (board.getPiece(oneStepForward) == null && board.getPiece(twoStepsForward) == null) {
-                                    doubleMove = getPawnMove(board, myPosition, path[0] - 1, path[1]);
-                                }
-                            }
-                        }
-                    }
+                    ChessMove doubleMove = getDoublePawnMoveIfValid(board, myPosition, path);
 
                     if (singleMove != null) {
                         if (canPromote(singleMove, teamColor)) {
-                            moves.addAll(getPawnPromotions(singleMove)); // Handle promotion
+                            moves.addAll(getPawnPromotions(singleMove));
                         } else {
-                            moves.add(singleMove); // Regular single-square move
+                            moves.add(singleMove);
                         }
                     }
+
                     if (doubleMove != null) {
                         moves.add(doubleMove);
                     }
@@ -112,6 +93,22 @@ public class ChessPiece {
             }
         }
         return moves;
+    }
+
+    private ChessMove getDoublePawnMoveIfValid(ChessBoard board, ChessPosition myPosition, int[] path) {
+        if (path[1] != 0 || !isFirstMove(teamColor, myPosition)) {
+            return null;
+        }
+
+        int direction = teamColor == ChessGame.TeamColor.WHITE ? 1 : -1;
+        ChessPosition oneStepForward = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn());
+        ChessPosition twoStepsForward = new ChessPosition(myPosition.getRow() + 2 * direction, myPosition.getColumn());
+
+        if (board.getPiece(oneStepForward) == null && board.getPiece(twoStepsForward) == null) {
+            return getPawnMove(board, myPosition, path[0] + direction, path[1]);
+        }
+
+        return null;
     }
 
     private int[][] getPaths(PieceType type){
@@ -158,25 +155,18 @@ public class ChessPiece {
                 };
             }
             case PAWN -> {
-                switch (this.getTeamColor()){
-                    case WHITE -> {
-                        return new int [][]{
-                                {1, -1},
-                                {1, 0},
-                                {1, 1},
-                        };
-                    }
-                    case BLACK -> {
-                        return new int [][]{
-                                {-1, -1},
-                                {-1, 0},
-                                {-1, 1},
-                        };
-                    }
-                }
+                return getPawnPaths();
             }
         }
         return null;
+    }
+
+    private int[][] getPawnPaths() {
+        if (teamColor == ChessGame.TeamColor.WHITE) {
+            return new int[][]{{1, -1}, {1, 0}, {1, 1}};
+        } else {
+            return new int[][]{{-1, -1}, {-1, 0}, {-1, 1}};
+        }
     }
 
     private boolean isOccupied (ChessBoard board, ChessPosition nextPos){

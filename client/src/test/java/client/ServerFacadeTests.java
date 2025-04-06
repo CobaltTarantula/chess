@@ -180,13 +180,4 @@ public class ServerFacadeTests {
 
         assertTrue(exception.getMessage().contains("HTTP error code: 400"), "Should throw an exception for a non-existent game");
     }
-
-    // Example: Test handling of invalid server requests (e.g., invalid endpoint)
-    @Test
-    void invalidRequest() {
-        Exception exception = assertThrows(IOException.class, () -> {
-            facade.makeInvalidRequest();  // Assuming there's a method that makes an invalid request
-        });
-        assertTrue(exception.getMessage().contains("404"), "Should throw an IOException for invalid request");
-    }
 }

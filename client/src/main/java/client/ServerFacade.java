@@ -143,17 +143,4 @@ public class ServerFacade {
         // Close the connection
         connection.disconnect();
     }
-
-    public void makeInvalidRequest() throws IOException {
-        // Perform an HTTP request to a non-existent endpoint (e.g., "/invalid")
-        URL url = validateUrl("/invalid");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-
-        // This should throw an exception or return a 404 status
-        int responseCode = connection.getResponseCode();
-        if (responseCode == 404) {
-            throw new IOException("404 Not Found: Invalid endpoint");
-        }
-    }
 }
