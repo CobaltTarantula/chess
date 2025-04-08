@@ -45,7 +45,9 @@ public class ServerFacade {
 
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            if (responseType == Void.class) return null;
+            if (responseType == Void.class){
+                return null;
+            }
 
             try (InputStream resBody = connection.getInputStream()) {
                 return new Gson().fromJson(new InputStreamReader(resBody), responseType);
