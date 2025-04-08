@@ -207,7 +207,7 @@ public class ConsoleUI {
     }
 
     private void playGame(){
-        out.print("Enter either the number of the game you'd like to join: ");
+        out.print("Enter the number of the game you'd like to join: ");
         String input = scanner.nextLine();
 
         if (isInList(input)) {

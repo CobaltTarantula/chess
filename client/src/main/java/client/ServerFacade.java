@@ -50,7 +50,11 @@ public class ServerFacade {
             try (InputStream resBody = connection.getInputStream()) {
                 return new Gson().fromJson(new InputStreamReader(resBody), responseType);
             }
-        } else {
+        }
+        else if (responseCode == 401){
+            throw new IOException("Invalid login");
+        }
+        else {
             throw new IOException("HTTP error code: " + responseCode);
         }
     }
