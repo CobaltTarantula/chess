@@ -32,8 +32,11 @@ public class BoardUI {
     private void drawHeader() {
         out.print(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_BLACK);
 
-        String headerLine = "    A   B  C   D   E  F   G   H    ";
+        String headerLine = switch (team) {
+            case WHITE -> "    A   B  C   D   E  F   G   H    ";
 
+            case BLACK -> "    H   G  F   E   D  C   B   A    ";
+        };
         out.println(headerLine + RESET_TEXT_COLOR + RESET_BG_COLOR);
     }
 
@@ -52,7 +55,8 @@ public class BoardUI {
         out.print(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_BLACK);
         out.printf(" %d ", row);
 
-        for (int col = 1; col <= BOARD_SIZE; col++) {
+        for (int c = 1; c <= BOARD_SIZE; c++) {
+            int col = (team == ChessGame.TeamColor.WHITE) ? c : BOARD_SIZE - c + 1;
             setSquareColor(row, col, highlightMoves, endPositions, selectedPos);
             out.print(getPiece(row, col));
             out.print(RESET_TEXT_COLOR);
