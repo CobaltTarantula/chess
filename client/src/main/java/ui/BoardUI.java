@@ -32,11 +32,8 @@ public class BoardUI {
     private void drawHeader() {
         out.print(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_BLACK);
 
-        String headerLine = switch (team) {
-            case WHITE -> "    A   B  C   D   E  F   G   H    ";
+        String headerLine = "    A   B  C   D   E  F   G   H    ";
 
-            case BLACK -> "    H   G  F   E   D  C   B   A    ";
-        };
         out.println(headerLine + RESET_TEXT_COLOR + RESET_BG_COLOR);
     }
 

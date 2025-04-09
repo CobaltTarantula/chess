@@ -143,7 +143,7 @@ public class ConsoleUI {
             out.println("Login successful. Hello, " + username + "!");
             loggedIn = true;
         } catch (Exception e) {
-            out.println("Invalid login" + e.getMessage());
+            out.println(e.getMessage());
         }
     }
 
@@ -242,7 +242,7 @@ public class ConsoleUI {
                 }
 
             } catch (Exception e) {
-                out.println("Failed to join game" + e.getMessage());
+                out.println(e.getMessage());
             }
         }
     }

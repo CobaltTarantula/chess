@@ -45,16 +45,21 @@ public class ServerFacade {
 
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            if (responseType == Void.class){
+            if (responseType == Void.class) {
                 return null;
             }
 
             try (InputStream resBody = connection.getInputStream()) {
                 return new Gson().fromJson(new InputStreamReader(resBody), responseType);
             }
-        }
-        else {
-            throw new IOException(" HTTP error code: " + responseCode);
+        } else {
+            String errorMessage = switch (responseCode) {
+                case HttpURLConnection.HTTP_UNAUTHORIZED -> "Invalid login";
+                case HttpURLConnection.HTTP_CONFLICT -> "Username already exists";
+                case HttpURLConnection.HTTP_FORBIDDEN -> "Access denied";
+                default -> "HTTP error code: " + responseCode;
+            };
+            throw new IOException(errorMessage);
         }
     }
 
