@@ -143,7 +143,7 @@ public class ConsoleUI {
             out.println("Login successful. Hello, " + username + "!");
             loggedIn = true;
         } catch (Exception e) {
-            out.println(e.getMessage());
+            out.println("Invalid login" + e.getMessage());
         }
     }
 

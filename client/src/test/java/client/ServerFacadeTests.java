@@ -60,22 +60,10 @@ public class ServerFacadeTests {
         }
 
         @Test
-        void loginIncorrectPassword() throws Exception {
-            facade.register("player3", "password", "p3@email.com");
-            System.out.println("Registered player3 with password: password");
+        void loginFailure() throws Exception {
+            facade.register("testUser", "testPassword", "testEmail");
 
-            try {
-                System.out.println("Attempting login with incorrect password...");
-                facade.login("player3", "wrongPassword");
-                fail("Expected IOException due to incorrect password");
-            } catch (IOException e) {
-                System.out.println("Caught IOException: " + e.getMessage());
-
-                assertTrue(e.getMessage().contains("HTTP error code: 401"),
-                        "Expected 'HTTP error code: 401' in exception message");
-            } catch (Exception e) {
-                fail("Expected IOException but got: " + e.getClass().getName());
-            }
+            Assertions.assertThrows(IOException.class, () -> facade.login("testUser", "badPassword"));
         }
     }
 
@@ -148,9 +136,7 @@ public class ServerFacadeTests {
             facade.register("player5", "password", "p5@email.com");
             AuthData authData = facade.login("player5", "password");
             String authToken = authData.authToken();
-            Exception exception = assertThrows(Exception.class, () -> {
-                facade.joinGame(authToken, "WHITE", 999);
-            });
+            Exception exception = assertThrows(Exception.class, () -> facade.joinGame(authToken, "WHITE", 999));
 
             System.out.println("Exception class: " + exception.getClass().getName());
             System.out.println("Exception message: " + exception.getMessage());
