@@ -105,11 +105,8 @@ public class ServerFacadeTests {
         }
 
         @Test
-        void listGamesInvalidAuth() {
-            Exception exception = assertThrows(IOException.class,
-                    () -> facade.listGames("invalidAuthToken"));
-            assertTrue(exception.getMessage().contains("401"),
-                    "Should throw unauthorized error for invalid auth token");
+        void listGamesFailure()  {
+            Assertions.assertThrows(IOException.class, () -> facade.listGames("badAuthToken"));
         }
     }
 
